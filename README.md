@@ -12,6 +12,32 @@ and 9 ft above today's high tide) it reports:
 One command reruns everything, the run checks its own results, and it writes
 a manifest that records exactly which data and code produced the outputs.
 
+## Results
+
+City land is 24.63 km². At 0 ft (today's MHHW) 5.68 km² of it, mostly tidal
+marsh, is already inundated. On top of that, new inundation is:
+
+| Sea-level rise | New inundation | Share of city land |
+|---|---|---|
+| 1 ft | 1.97 km² | 8.0% |
+| 3 ft | 5.30 km² | 21.5% |
+| 5 ft | 10.67 km² | 43.3% |
+| 7 ft | 15.22 km² | 61.8% |
+| 9 ft | 17.09 km² | 69.4% |
+
+At 3 ft, 7 of 70 OSM historic sites (including the Castillo de San Marcos and
+the Lincolnville Historic District) and 22 of 31 parks (including the Plaza de
+la Constitución) touch inundated land.
+
+![Inundation at each sea-level-rise level](docs/figures/fig1_inundation_small_multiples.png)
+
+![New land loss by level, slr and low stacked](docs/figures/fig2_land_loss_by_level.png)
+
+![Historic sites and parks at risk at 3 ft, with a downtown zoom](docs/figures/fig3_sites_at_risk_3ft.png)
+
+The images in `docs/figures/` are copies of the PNGs that `make run` writes to
+`outputs/`. Copy them again after a change that moves the results.
+
 ## Quick start
 
 ```bash
