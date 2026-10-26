@@ -12,6 +12,9 @@ and 9 ft above today's high tide) it reports:
 One command reruns everything, the run checks its own results, and it writes
 a manifest that records exactly which data and code produced the outputs.
 
+**Project page:** <https://lunarc-seattle.github.io/st-augustine-slr/>, with
+the results and every figure as a zoomable vector PDF.
+
 ## Results
 
 City land is 24.63 km². At 0 ft (today's MHHW) 5.68 km² of it, mostly tidal
@@ -35,8 +38,10 @@ la Constitución) touch inundated land.
 
 ![Historic sites and parks at risk at 3 ft, with a downtown zoom](docs/figures/fig3_sites_at_risk_3ft.png)
 
-The images in `docs/figures/` are copies of the PNGs that `make run` writes to
-`outputs/`. Copy them again after a change that moves the results.
+The PNGs in `docs/figures/` and the PDFs in `docs/pdf/` are copies of the
+figures that `make run` writes to `outputs/`. `docs/` is also the project page,
+served by GitHub Pages. Copy the figures again after a change that moves the
+results.
 
 ## Quick start
 
@@ -141,6 +146,7 @@ src/slr/pipeline.py     runs all scenarios and writes CSVs
 src/slr/figures.py      A4 maps and chart (PNG + PDF)
 src/slr/manifest.py     run record
 src/slr/cli.py          `python -m slr.cli data|run`
+docs/                   project page (index.html), figure PNGs and PDFs
 scripts/make_fixture.py rebuilds the test fixture and regression baseline
 ```
 

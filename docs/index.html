@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Sea-level-rise scenarios for St. Augustine, Florida: land loss at 1-9 ft, historic sites and parks at risk, and zoomable vector PDF figures.">
+<title>St. Augustine Under Rising Water</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; a tide-gauge table up top, then each figure as a plate with its vector PDF beneath. */
+:root {
+  --bg: #f6f7f5;
+  --surface: #ffffff;
+  --ink: #13181c;
+  --muted: #5d666c;
+  --rule: #dfe3e2;
+  --slr: #2a78d6;      /* ocean-connected, same blue as the figures */
+  --low: #eb6834;      /* low-lying unconnected, same orange as the figures */
+  --today: #a9a8a2;    /* already inundated at 0 ft */
+  --track: #e8ecec;
+  --focus: #2a78d6;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1417; --surface: #161d21; --ink: #e7ecee; --muted: #9aa5ab; --rule: #2a3439;
+    --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1417; --surface: #161d21; --ink: #e7ecee; --muted: #9aa5ab; --rule: #2a3439;
+  --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1rem; line-height: 1.6;
+}
+.wrap {
+  max-width: 68rem; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 3rem;
+  display: grid; gap: 3rem;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 600; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+header { display: grid; gap: 1rem; }
+.lede { font-size: 1.15rem; color: var(--ink); }
+.meta { color: var(--muted); font-size: 0.9rem; }
+a { color: var(--slr); }
+a:focus-visible, button:focus-visible, a.button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Tide gauge: each row is a level, the bar is newly inundated share of city land on a 0-100% scale. */
+.gauge { display: grid; gap: 1rem; }
+.gauge-head { display: grid; gap: 0.4rem; }
+.rows { display: grid; gap: 0.55rem; font-variant-numeric: tabular-nums; }
+.row { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) 4rem; gap: 0.75rem; align-items: center; }
+.lvl { font-family: var(--font-mono); font-size: 0.95rem; text-align: right; }
+.track { height: 1.4rem; background: var(--track); border-radius: 2px; display: flex; overflow: hidden; }
+.seg-slr { background: var(--slr); }
+.seg-low { background: var(--low); }
+.pct { font-family: var(--font-mono); font-weight: 500; }
+.scale { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) 4rem; gap: 0.75rem; }
+.ticks { position: relative; height: 1.2rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+.ticks span { position: absolute; transform: translateX(-50%); }
+.ticks span:first-child { transform: none; }
+.ticks span:last-child { transform: translateX(-100%); }
+.key { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: 0.85rem; color: var(--muted); }
+.key i { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 2px; margin-right: 0.4rem; vertical-align: -0.1rem; }
+.note { font-size: 0.9rem; color: var(--muted); }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
+.fact { border-top: 2px solid var(--ink); padding-top: 0.6rem; display: grid; gap: 0.25rem; min-width: 0; }
+.fact b { font-family: var(--font-display); font-size: 1.9rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fact span { font-size: 0.9rem; color: var(--muted); }
+
+/* Figure plates */
+.plates { display: grid; gap: 3rem; }
+.plate { display: grid; gap: 0.9rem; }
+.plate-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; }
+.plate-head > div { min-width: 0; display: grid; gap: 0.2rem; }
+.sheet {
+  background: #ffffff;  /* the figures are printed on white in both themes */
+  border: 1px solid var(--rule); border-radius: 3px; overflow: hidden;
+}
+.sheet img { display: block; width: 100%; height: auto; }
+.caption { font-size: 0.95rem; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+button {
+  font: 500 0.9rem/1 var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 3px; padding: 0.6rem 0.9rem; cursor: pointer;
+}
+button:hover, a.button:hover { border-color: var(--muted); }
+a.button {
+  font: 500 0.9rem/1 var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 3px; padding: 0.6rem 0.9rem; text-decoration: none;
+}
+button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+button[disabled] { opacity: 0.5; cursor: default; }
+.status { font-size: 0.85rem; color: var(--muted); align-self: center; }
+
+.viewer { display: grid; gap: 0.6rem; }
+.viewer-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.zoom { font-family: var(--font-mono); font-size: 0.85rem; min-width: 3.5rem; text-align: center; }
+.canvas-box {
+  overflow: auto; max-height: 80vh; background: #ffffff;
+  border: 1px solid var(--rule); border-radius: 3px;
+}
+.canvas-box canvas { display: block; }
+
+.details { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 2rem; }
+.details section { display: grid; gap: 0.6rem; align-content: start; min-width: 0; }
+.details ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
+footer { border-top: 1px solid var(--rule); padding-top: 1rem; font-size: 0.85rem; color: var(--muted); display: grid; gap: 0.4rem; }
+code { font-family: var(--font-mono); font-size: 0.9em; }
+@media (max-width: 480px) {
+  .row, .scale { grid-template-columns: 2.8rem minmax(0, 1fr) 3.4rem; gap: 0.5rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .seg-slr, .seg-low { transition: width 0.6s ease; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">St. Augustine, Florida · NOAA SLR scenarios above MHHW</span>
+    <h1>St. Augustine under rising water</h1>
+    <p class="lede">At 3 ft of sea-level rise, a fifth of the city's land floods beyond today's high-tide line, and the water reaches the Castillo de San Marcos and the Plaza de la Constitución.</p>
+    <p class="meta">A reproducible pipeline built from NOAA, U.S. Census and OpenStreetMap data. Source code: <a href="https://github.com/Lunarc-Seattle/st-augustine-slr">github.com/Lunarc-Seattle/st-augustine-slr</a></p>
+  </header>
+
+  <section class="gauge" aria-labelledby="gauge-title">
+    <div class="gauge-head">
+      <h2 id="gauge-title">New inundation by sea-level rise</h2>
+      <p class="note">Share of the city's 24.63 km² of land that floods at each level, not counting the 5.68 km² (mostly tidal marsh) already below today's mean higher high water.</p>
+    </div>
+    <div class="rows" role="table" aria-label="Newly inundated share of city land by sea-level rise">
+      <div class="row" role="row"><span class="lvl" role="rowheader">1 ft</span><div class="track" role="cell" aria-label="7.4% ocean-connected, 0.5% low-lying"><span class="seg-slr" style="width:7.43%"></span><span class="seg-low" style="width:0.55%"></span></div><span class="pct" role="cell">8.0%</span></div>
+      <div class="row" role="row"><span class="lvl" role="rowheader">3 ft</span><div class="track" role="cell" aria-label="19.4% ocean-connected, 2.1% low-lying"><span class="seg-slr" style="width:19.41%"></span><span class="seg-low" style="width:2.13%"></span></div><span class="pct" role="cell">21.5%</span></div>
+      <div class="row" role="row"><span class="lvl" role="rowheader">5 ft</span><div class="track" role="cell" aria-label="41.0% ocean-connected, 2.3% low-lying"><span class="seg-slr" style="width:41.03%"></span><span class="seg-low" style="width:2.30%"></span></div><span class="pct" role="cell">43.3%</span></div>
+      <div class="row" role="row"><span class="lvl" role="rowheader">7 ft</span><div class="track" role="cell" aria-label="61.1% ocean-connected, 0.7% low-lying"><span class="seg-slr" style="width:61.14%"></span><span class="seg-low" style="width:0.67%"></span></div><span class="pct" role="cell">61.8%</span></div>
+      <div class="row" role="row"><span class="lvl" role="rowheader">9 ft</span><div class="track" role="cell" aria-label="69.4% ocean-connected, 0% low-lying"><span class="seg-slr" style="width:69.39%"></span><span class="seg-low" style="width:0%"></span></div><span class="pct" role="cell">69.4%</span></div>
+      <div class="scale" aria-hidden="true"><span></span><div class="ticks"><span style="left:0">0%</span><span style="left:25%">25%</span><span style="left:50%">50%</span><span style="left:75%">75%</span><span style="left:100%">100%</span></div><span></span></div>
+    </div>
+    <div class="key">
+      <span><i style="background:var(--slr)"></i>Ocean-connected (<code>slr</code>)</span>
+      <span><i style="background:var(--low)"></i>Low-lying, not connected to the ocean (<code>low</code>)</span>
+    </div>
+  </section>
+
+  <section class="facts" aria-label="Sites at 3 ft">
+    <div class="fact"><b>7 of 70</b><span>OSM historic sites touch inundated land at 3 ft</span></div>
+    <div class="fact"><b>22 of 31</b><span>parks touch inundated land at 3 ft</span></div>
+    <div class="fact"><b>0.14%</b><span>gap between computed city land and the Census <code>ALAND</code> figure</span></div>
+  </section>
+
+  <section class="plates" aria-label="Figures">
+    <article class="plate" data-pdf="pdf/fig1_inundation_small_multiples.pdf">
+      <div class="plate-head">
+        <div><span class="eyebrow">Figure 1 · A4 landscape · vector PDF 11.9 MB</span><h3>Inundation at 1, 3, 5, 7 and 9 ft</h3></div>
+      </div>
+      <div class="sheet"><img src="figures/fig1_inundation_small_multiples.png" alt="Five maps of St. Augustine on the same extent and scale. Blue ocean-connected flooding spreads from the marshes and rivers at 1 ft to most of the city at 9 ft." loading="lazy"></div>
+      <p class="caption">Same extent and scale on every map. Grey is land already inundated at 0 ft. Blue and orange are new inundation at that level.</p>
+      <div class="actions"></div>
+    </article>
+
+    <article class="plate" data-pdf="pdf/fig2_land_loss_by_level.pdf">
+      <div class="plate-head">
+        <div><span class="eyebrow">Figure 2 · A4 landscape · vector PDF 35 KB</span><h3>New land loss by level</h3></div>
+      </div>
+      <div class="sheet"><img src="figures/fig2_land_loss_by_level.png" alt="Stacked bar chart of newly inundated share of city land: 8.0% at 1 ft, 21.5% at 3 ft, 43.3% at 5 ft, 61.8% at 7 ft and 69.4% at 9 ft." loading="lazy"></div>
+      <p class="caption">The unconnected <code>low</code> share rises and then falls: as water connects a low-lying area to the ocean, NOAA reclassifies it as <code>slr</code>.</p>
+      <div class="actions"></div>
+    </article>
+
+    <article class="plate" data-pdf="pdf/fig3_sites_at_risk_3ft.pdf">
+      <div class="plate-head">
+        <div><span class="eyebrow">Figure 3 · A4 landscape · vector PDF 5.6 MB</span><h3>Historic sites and parks at risk at 3 ft</h3></div>
+      </div>
+      <div class="sheet"><img src="figures/fig3_sites_at_risk_3ft.png" alt="City map and downtown zoom at 3 ft, with historic sites at risk as black triangles and parks at risk hatched green, plus a list of their names." loading="lazy"></div>
+      <p class="caption">“At risk” means any part of the site or park touches inundated land. OSM tags many downtown buildings without <code>historic=*</code>, so these counts are a lower bound.</p>
+      <div class="actions"></div>
+    </article>
+  </section>
+
+  <div class="details">
+    <section>
+      <h3>Method</h3>
+      <ul>
+        <li>City boundary from TIGER/Line 2025, projected to NAD83 / UTM 17N so every area is in m².</li>
+        <li>City land is the boundary minus Census water, so open water never counts as land lost.</li>
+        <li>NOAA <code>slr</code> and <code>low</code> layers are clipped, dissolved and intersected with land at each level.</li>
+        <li>Land already inundated at 0 ft is the baseline; the headline numbers are new inundation only.</li>
+        <li>Every run checks itself: 0 ft new loss is zero, <code>slr</code> never shrinks with level, and <code>slr</code> and <code>low</code> never overlap.</li>
+      </ul>
+    </section>
+    <section>
+      <h3>Limits</h3>
+      <ul>
+        <li>NOAA's layers are a bathtub model on a lidar DEM: no storm surge, waves, erosion or future defences.</li>
+        <li>Whether <code>low</code> areas actually flood depends on drainage and groundwater.</li>
+        <li>The OSM extract is frozen at its query time; site counts are a lower bound.</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <span>Sources: NOAA Office for Coastal Management Sea Level Rise Viewer data (FL_NE); U.S. Census Bureau TIGER/Line 2025 places and area water; © OpenStreetMap contributors (ODbL).</span>
+    <span>Reproduce with <code>make data run test</code>. Reruns write byte-identical CSVs and figures.</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+  var lib = window.pdfjsLib;
+  if (lib) lib.GlobalWorkerOptions.workerSrc = "vendor/pdf.worker.min.js";
+  var MAX_PIXELS = 24e6;  // keep big zooms of the 11.9 MB map inside canvas limits
+
+  function el(tag, attrs, text) {
+    var node = document.createElement(tag);
+    for (var k in attrs) node.setAttribute(k, attrs[k]);
+    if (text) node.textContent = text;
+    return node;
+  }
+
+  document.querySelectorAll(".plate").forEach(function (plate, i) {
+    var url = plate.dataset.pdf;
+    var name = url.split("/").pop();
+    var actions = plate.querySelector(".actions");
+    var viewBtn = el("button", { type: "button", id: "view-" + i, "aria-expanded": "false" }, "View vector PDF");
+    var saveBtn = el("a", { class: "button", href: url, download: name }, "Download PDF");
+    var status = el("span", { class: "status", role: "status" });
+    actions.append(viewBtn, saveBtn, status);
+    if (!lib) { viewBtn.disabled = true; status.textContent = "The PDF viewer could not load. The image above is the same figure."; }
+
+    var viewer = null, doc = null, zoom = 1, rendering = null;
+
+    function render() {
+      if (!doc) return;
+      var box = viewer.querySelector(".canvas-box");
+      var label = viewer.querySelector(".zoom");
+      label.textContent = Math.round(zoom * 100) + "%";
+      if (rendering) rendering.cancel();
+      doc.getPage(1).then(function (page) {
+        var base = page.getViewport({ scale: 1 });
+        var cssScale = (box.clientWidth - 2) / base.width * zoom;
+        var dpr = window.devicePixelRatio || 1;
+        var px = base.width * base.height * cssScale * cssScale * dpr * dpr;
+        if (px > MAX_PIXELS) dpr = Math.sqrt(MAX_PIXELS / (base.width * base.height * cssScale * cssScale));
+        var vp = page.getViewport({ scale: cssScale * dpr });
+        var canvas = box.querySelector("canvas") || box.appendChild(document.createElement("canvas"));
+        canvas.width = Math.floor(vp.width); canvas.height = Math.floor(vp.height);
+        canvas.style.width = Math.floor(vp.width / dpr) + "px";
+        canvas.style.height = Math.floor(vp.height / dpr) + "px";
+        status.textContent = "Rendering…";
+        rendering = page.render({ canvasContext: canvas.getContext("2d"), viewport: vp });
+        return rendering.promise.then(function () { status.textContent = ""; rendering = null; });
+      }).catch(function (err) {
+        if (err && err.name === "RenderingCancelledException") return;
+        status.textContent = "This PDF could not be rendered here. The image above is the same figure.";
+      });
+    }
+
+    function step(factor) { zoom = Math.min(4, Math.max(1, zoom * factor)); render(); }
+
+    viewBtn.addEventListener("click", function () {
+      if (viewer) {
+        var open = viewer.hidden;
+        viewer.hidden = !open;
+        plate.querySelector(".sheet").hidden = open;
+        viewBtn.textContent = open ? "Show image" : "View vector PDF";
+        viewBtn.setAttribute("aria-expanded", String(open));
+        if (open) render();
+        return;
+      }
+      viewer = el("div", { class: "viewer" });
+      var bar = el("div", { class: "viewer-bar" });
+      var out = el("button", { type: "button", id: "zoom-out-" + i, "aria-label": "Zoom out" }, "−");
+      var label = el("span", { class: "zoom", "aria-live": "polite" }, "100%");
+      var inn = el("button", { type: "button", id: "zoom-in-" + i, "aria-label": "Zoom in" }, "+");
+      var fit = el("button", { type: "button", id: "zoom-fit-" + i }, "Fit width");
+      out.addEventListener("click", function () { step(1 / 1.5); });
+      inn.addEventListener("click", function () { step(1.5); });
+      fit.addEventListener("click", function () { zoom = 1; render(); });
+      bar.append(out, label, inn, fit, el("span", { class: "status" }, "Vector rendering: zoom in for street-level detail."));
+      viewer.append(bar, el("div", { class: "canvas-box" }));
+      plate.querySelector(".sheet").after(viewer);
+      plate.querySelector(".sheet").hidden = true;
+      viewBtn.textContent = "Show image";
+      viewBtn.setAttribute("aria-expanded", "true");
+      status.textContent = "Loading " + name + "…";
+      lib.getDocument(url).promise.then(function (d) { doc = d; render(); })
+        .catch(function () { status.textContent = "This PDF could not be loaded. The image above is the same figure."; plate.querySelector(".sheet").hidden = false; });
+    });
+  });
+})();
+</script>
+</body>
+</html>
