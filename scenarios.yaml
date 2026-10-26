@@ -2,6 +2,10 @@
 # Add or remove a level here; no code change is needed.
 levels_ft: [1, 3, 5, 7, 9]
 
+# Today's high-tide line (MHHW). Land already flooded at this level is reported
+# separately, so "new" land loss is measured against it.
+baseline_ft: 0
+
 # All area math happens in this projected CRS (NAD83 / UTM zone 17N, metres).
 area_crs: EPSG:26917
 
@@ -17,7 +21,10 @@ sources:
   noaa_slr:
     url: https://chs.coast.noaa.gov/htdata/Inundation/SLR/BulkDownload/Sea_Level_Rise_Vectors/FL/FL_NE_slr_data_dist.zip
     member: FL_NE_slr_final_dist.gpkg
+    layer_prefix: FL_NE   # layers look like FL_NE_slr_3_0ft / FL_NE_low_3_0ft
   tiger_places:
     url: https://www2.census.gov/geo/tiger/TIGER2025/PLACE/tl_2025_12_place.zip
+  tiger_water:
+    url: https://www2.census.gov/geo/tiger/TIGER2025/AREAWATER/tl_2025_12109_areawater.zip
   hurdat2:
     url: https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt
