@@ -2,7 +2,7 @@
 
 import sys
 
-from slr import manifest, pipeline
+from slr import figures, manifest, pipeline
 
 
 def main(argv=None):
@@ -15,7 +15,7 @@ def main(argv=None):
         pipeline.osm.fetch_sites(city, cfg["osm_tags"])
     elif command == "run":
         context = pipeline.run()
-        outputs = sorted(context["out_dir"].glob("*.csv"))
+        outputs = sorted(context["out_dir"].glob("*.csv")) + figures.make_all(context)
         manifest.write_manifest(context, outputs)
         print(context["table"].to_string(index=False))
     else:

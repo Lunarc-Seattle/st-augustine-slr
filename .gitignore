@@ -41,3 +41,6 @@ __pycache__/
 
 ### Data cache (re-created by `make data`) ###
 data/cache/
+
+### Pipeline outputs (re-created by `make run`) ###
+outputs/
