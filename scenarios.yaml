@@ -26,5 +26,3 @@ sources:
     url: https://www2.census.gov/geo/tiger/TIGER2025/PLACE/tl_2025_12_place.zip
   tiger_water:
     url: https://www2.census.gov/geo/tiger/TIGER2025/AREAWATER/tl_2025_12109_areawater.zip
-  hurdat2:
-    url: https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt

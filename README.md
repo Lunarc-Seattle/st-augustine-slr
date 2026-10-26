@@ -46,7 +46,6 @@ compared directly.
 | U.S. Census Bureau, TIGER/Line 2025 places, Florida | [`tl_2025_12_place.zip`](https://www2.census.gov/geo/tiger/TIGER2025/PLACE/tl_2025_12_place.zip) | 2026-10-26 |
 | U.S. Census Bureau, TIGER/Line 2025 area water, St. Johns County | [`tl_2025_12109_areawater.zip`](https://www2.census.gov/geo/tiger/TIGER2025/AREAWATER/tl_2025_12109_areawater.zip) | 2026-10-26 |
 | OpenStreetMap contributors (ODbL), via OSMnx and the Overpass API (`overpass-api.de`), tags `historic=*` and `leisure=park` | frozen in `data/cache/osm/osm_sites.geojson` | queried 2026-10-26 |
-| NOAA National Hurricane Center, HURDAT2 (downloaded, not yet used) | [`hurdat2-1851-2025-092326.txt`](https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt) | 2026-10-26 |
 
 Exact timestamps and SHA-256 hashes are in each file's `*.meta.json` in
 `data/cache/` and are copied into `outputs/manifest.json` on every run.
@@ -141,3 +140,8 @@ scripts/make_fixture.py rebuilds the test fixture and regression baseline
   north by less than 0.2° at St. Augustine.
 - The current city boundary (TIGER 2025) may differ from the one used in the
   original portfolio study, so the numbers are not directly comparable to it.
+
+## Future work
+
+- Add NOAA HURDAT2 to count historical hurricanes that passed near
+  St. Augustine.
