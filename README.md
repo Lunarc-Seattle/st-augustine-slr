@@ -200,6 +200,13 @@ scripts/make_fixture.py rebuilds the test fixture and regression baseline
   above MHHW, not exact locations or timing. They are a "bathtub" model on a
   lidar DEM: no storm surge, waves, erosion, sediment, drainage or future
   defences. Small features (seawalls, culverts) may be wrong at parcel scale.
+- This is **not a HAND or hydrodynamic flood model**. HAND (Height Above
+  Nearest Drainage) maps riverine flooding from each cell's height above the
+  nearest stream. NOAA's sea-level-rise method instead raises the MHHW tidal
+  surface (from VDatum) by the scenario amount, compares it with the DEM, and
+  splits cells below the water into ocean-connected (`slr`) and unconnected
+  (`low`). This pipeline runs no flood model at all: it reads NOAA's
+  precomputed polygons and does area and overlay analysis on them.
 - `low` areas are places that would sit below the water level but are not
   connected to the ocean on the DEM. Whether they actually flood depends on
   drainage and groundwater.
