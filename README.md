@@ -1,5 +1,32 @@
 # St. Augustine sea-level-rise scenarios
 
+[![test](https://github.com/Lunarc-Seattle/st-augustine-slr/actions/workflows/test.yml/badge.svg)](https://github.com/Lunarc-Seattle/st-augustine-slr/actions/workflows/test.yml)
+![Python 3.14](https://img.shields.io/badge/python-3.14-blue)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Project page](https://img.shields.io/badge/project-page-informational)](https://lunarc-seattle.github.io/st-augustine-slr/)
+
+![Inundation at each sea-level-rise level](docs/figures/fig1_inundation_small_multiples.png)
+
+**Engineering at a glance**
+
+- **One command, reproducible.** `make run` downloads, analyses, checks and
+  plots. Reruns produce byte-identical CSVs and figures.
+- **Provenance.** Every run writes a manifest with SHA-256 hashes and dates
+  of all inputs and outputs, the OSM query, package versions and git commit.
+- **Self-checking.** Invariants (0 ft new loss is 0, loss never shrinks with
+  level, `slr` and `low` never overlap) are asserted on every run.
+- **Tested in CI.** Offline pytest suite on a 1.5 km fixture of the real data,
+  with a regression baseline, runs on every push in about a second.
+- **Config-driven.** Scenario levels, CRS, study area and sources live in
+  `scenarios.yaml`; adding a level needs no code change.
+- **Memory-aware I/O.** Layers are read straight out of a 290 MB zipped
+  geopackage with a bounding-box filter, never extracting the 1.1 GB file.
+
+Stack: Python, GeoPandas, Shapely, pyogrio/GDAL, pyproj, OSMnx, pandas,
+Matplotlib, pytest, GitHub Actions, GitHub Pages.
+
+## What it does
+
 A small, reproducible pipeline that rebuilds a sea-level-rise study of
 St. Augustine, Florida from public data. For each scenario level (1, 3, 5, 7
 and 9 ft above today's high tide) it reports:
@@ -31,8 +58,6 @@ marsh, is already inundated. On top of that, new inundation is:
 At 3 ft, 7 of 70 OSM historic sites (including the Castillo de San Marcos and
 the Lincolnville Historic District) and 22 of 31 parks (including the Plaza de
 la Constitución) touch inundated land.
-
-![Inundation at each sea-level-rise level](docs/figures/fig1_inundation_small_multiples.png)
 
 ![New land loss by level, slr and low stacked](docs/figures/fig2_land_loss_by_level.png)
 
@@ -177,3 +202,11 @@ scripts/make_fixture.py rebuilds the test fixture and regression baseline
 
 - Add NOAA HURDAT2 to count historical hurricanes that passed near
   St. Augustine.
+
+## License
+
+Code is under the [MIT License](LICENSE). The data are not covered by it:
+NOAA and U.S. Census data are U.S. Government works in the public domain, and
+OpenStreetMap data are © OpenStreetMap contributors under the
+[ODbL](https://opendatacommons.org/licenses/odbl/). The figures contain OSM
+data, so reuse of them must credit OpenStreetMap.
