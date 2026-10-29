@@ -10,7 +10,7 @@ endif
 VENV := .venv
 PY := $(VENV)/$(BIN)/python
 
-.PHONY: venv data run test lint format fixture clean
+.PHONY: venv data run test lint format docs fixture clean
 
 venv: $(VENV)/.installed
 
@@ -42,6 +42,11 @@ lint: venv
 format: venv
 	$(PY) -m ruff check --fix src tests scripts
 	$(PY) -m ruff format src tests scripts
+
+## Copy the current figures into docs/ (README images and the project page).
+docs:
+	cp outputs/fig*.png docs/figures/
+	cp outputs/fig[1-3]_*.pdf docs/pdf/
 
 ## Rebuild the test fixture and regression baseline (only on intended changes).
 fixture: venv

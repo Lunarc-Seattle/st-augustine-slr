@@ -29,6 +29,8 @@ SOURCE = (
     "© OpenStreetMap contributors (ODbL). NAD83 / UTM zone 17N."
 )
 
+SOURCE_NO_OSM = SOURCE.replace(" © OpenStreetMap contributors (ODbL).", "")  # maps without OSM data
+
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8, "svg.hashsalt": "slr"})
 
 
@@ -203,7 +205,7 @@ def land_loss_chart(ctx):
         fontweight="bold",
     )
     fig.subplots_adjust(left=0.08, right=0.97, top=0.9, bottom=0.12)
-    source_line(fig, SOURCE.replace(" © OpenStreetMap contributors (ODbL).", ""))
+    source_line(fig, SOURCE_NO_OSM)
     return save(fig, ctx["out_dir"], "fig2_land_loss_by_level")
 
 
@@ -283,9 +285,48 @@ def sites_map(ctx, level=3):
     return save(fig, ctx["out_dir"], f"fig3_sites_at_risk_{level:g}ft")
 
 
+def cover(ctx):
+    """16:9 overview for the README and portfolio: lowest, middle, highest level."""
+    levels = ctx["cfg"]["levels_ft"]
+    picks = [levels[0], levels[len(levels) // 2], levels[-1]]
+    fig = plt.figure(figsize=(12, 6.75))
+    for i, level in enumerate(picks):
+        ax = fig.add_axes([0.02 + i * 0.325, 0.05, 0.31, 0.7])
+        base_map(ax, ctx)
+        flood_layers(ax, ctx, level)
+        finish_map(ax)
+        ax.set_title(
+            f"{level:g} ft   {loss_pct(ctx['table'], level):.1f}% of land newly inundated",
+            loc="left",
+            fontsize=11,
+            fontweight="bold",
+        )
+    fig.text(0.02, 0.93, "St. Augustine, Florida under sea-level rise", fontsize=20, fontweight="bold")
+    fig.text(
+        0.02,
+        0.885,
+        "Land inundated above today's high tide (MHHW), ocean-connected and low-lying "
+        "areas kept apart. Reproducible Python pipeline on public data.",
+        fontsize=10,
+        color=COLORS["muted"],
+    )
+    fig.legend(
+        handles=legend_handles(),
+        loc="upper left",
+        bbox_to_anchor=(0.015, 0.865),
+        ncol=5,
+        frameon=False,
+        fontsize=8,
+        handlelength=1.2,
+        columnspacing=1.5,
+    )
+    source_line(fig, SOURCE_NO_OSM)
+    return save(fig, ctx["out_dir"], "fig0_cover")
+
+
 def make_all(ctx):
     """Draw every figure; return the list of files written."""
-    paths = small_multiples(ctx) + land_loss_chart(ctx)
+    paths = cover(ctx) + small_multiples(ctx) + land_loss_chart(ctx)
     if 3 in ctx["cfg"]["levels_ft"]:
         paths += sites_map(ctx, 3)
     return paths
