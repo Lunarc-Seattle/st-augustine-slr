@@ -73,8 +73,22 @@ results.
 ```bash
 make data   # create .venv, download sources into data/cache (once)
 make run    # analysis, self-checks, CSVs, figures and manifest -> outputs/
-make test   # offline tests on a small fixture (about 1 s)
+make test   # offline tests on a small fixture, with coverage (a few seconds)
+make lint   # ruff lint and format check, as in CI
 ```
+
+The Makefile works on Linux, macOS and Windows (Git Bash with GNU make).
+Without make, the same steps are:
+
+```bash
+python -m venv .venv            # then activate it
+pip install -r requirements.txt && pip install --no-deps -e .
+slr data && slr run             # or: python -m slr.cli run --config scenarios.yaml --out outputs
+pytest
+```
+
+`requirements.txt` pins exact versions for reproducible runs; `pyproject.toml`
+declares the supported ranges and the `slr` command.
 
 To add or remove a scenario level, edit `levels_ft` in `scenarios.yaml`. No
 code change is needed: NOAA publishes layers in half-foot steps from 0 to 10 ft.
@@ -156,8 +170,13 @@ window of the real data over downtown, so no download is needed:
   well above floating-point noise.
 
 If a method change is intended to move the results, run `make fixture`,
-review the new baseline, and commit both fixture files together. GitHub
-Actions (`.github/workflows/test.yml`) runs `make test` on `ubuntu-latest`.
+review the new baseline, and commit both fixture files together.
+
+Other tests cover the download cache (with a fake HTTP response), provenance
+sidecars, the manifest, Overpass query capture, the CLI, and a smoke test
+that draws every figure on the fixture twice and checks the files are
+byte-identical. GitHub Actions (`.github/workflows/test.yml`) runs ruff and
+the test suite with coverage on Linux, Windows and macOS.
 
 ## Project layout
 

@@ -90,7 +90,7 @@ def run(config_path="scenarios.yaml", out_dir="outputs"):
     cfg = read_config(config_path)
     paths = fetch_sources(cfg)
     city, water, land = load_study_area(cfg, paths)
-    sites, osm_meta = osm.fetch_sites(city, cfg["osm_tags"])
+    sites, osm_meta = osm.fetch_sites(city, cfg["osm_tags"], endpoint=cfg.get("overpass_url"))
     sites = gpd.clip(sites, city)  # same footprint as every other layer
     flooded = load_flooding(cfg, paths, city, land)
 
@@ -99,7 +99,15 @@ def run(config_path="scenarios.yaml", out_dir="outputs"):
     write_csv(table, out_dir / "land_loss.csv")
     write_csv(risk.sort_values(["level_ft", "kind", "osm_type", "osm_id"]), out_dir / "sites_at_risk.csv")
     return {
-        "cfg": cfg, "paths": paths, "city": city, "water": water, "land": land,
-        "sites": sites, "osm_meta": osm_meta, "flooded": flooded, "table": table,
-        "risk": risk, "out_dir": out_dir,
+        "cfg": cfg,
+        "paths": paths,
+        "city": city,
+        "water": water,
+        "land": land,
+        "sites": sites,
+        "osm_meta": osm_meta,
+        "flooded": flooded,
+        "table": table,
+        "risk": risk,
+        "out_dir": out_dir,
     }

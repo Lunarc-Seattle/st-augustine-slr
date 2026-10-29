@@ -6,7 +6,7 @@ download date, so the run manifest can cite exactly what was analysed.
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import requests
@@ -46,13 +46,13 @@ def fetch(url, cache_dir=CACHE_DIR):
         with open(part, "wb") as f:
             for chunk in response.iter_content(chunk_size=1 << 20):
                 f.write(chunk)
-    part.rename(path)
+    part.replace(path)  # rename() fails on Windows if a stale file is left over
 
     meta = {
         "url": url,
         "sha256": sha256(path),
         "bytes": path.stat().st_size,
-        "downloaded_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "downloaded_utc": datetime.now(UTC).isoformat(timespec="seconds"),
     }
     meta_path(path).write_text(json.dumps(meta, indent=2))
     return path

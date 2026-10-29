@@ -8,24 +8,26 @@ import geopandas as gpd
 import matplotlib
 
 matplotlib.use("Agg")  # no screen needed; also makes CI and reruns identical
-import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.patches import Patch, Rectangle  # noqa: E402
-from matplotlib.lines import Line2D  # noqa: E402
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch, Rectangle
 
 A4_LANDSCAPE = (11.69, 8.27)  # inches
 COLORS = {
     "land": "#f1efe8",
     "water": "#d6e1ea",
     "today": "#a9a8a2",  # land already flooded at the baseline (0 ft)
-    "slr": "#2a78d6",    # newly flooded, ocean-connected
-    "low": "#eb6834",    # newly flooded, unconnected low-lying
+    "slr": "#2a78d6",  # newly flooded, ocean-connected
+    "low": "#eb6834",  # newly flooded, unconnected low-lying
     "ink": "#0b0b0b",
     "muted": "#6f6e69",
     "park": "#1baf7a",
 }
-SOURCE = ("Sources: NOAA Office for Coastal Management Sea Level Rise Viewer data (FL_NE); "
-          "U.S. Census Bureau TIGER/Line 2025 places and area water; "
-          "© OpenStreetMap contributors (ODbL). NAD83 / UTM zone 17N.")
+SOURCE = (
+    "Sources: NOAA Office for Coastal Management Sea Level Rise Viewer data (FL_NE); "
+    "U.S. Census Bureau TIGER/Line 2025 places and area water; "
+    "© OpenStreetMap contributors (ODbL). NAD83 / UTM zone 17N."
+)
 
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8, "svg.hashsalt": "slr"})
 
@@ -51,8 +53,17 @@ def scale_bar(ax, length_m=2000):
     x, y = x0 + 0.05 * (x1 - x0), y0 + 0.04 * (y1 - y0)
     height = 0.012 * (y1 - y0)
     half = length_m / 2
-    ax.add_patch(Rectangle((x - 0.02 * (x1 - x0), y - 0.015 * (y1 - y0)), length_m + 0.06 * (x1 - x0),
-                           0.07 * (y1 - y0), facecolor="white", alpha=0.85, lw=0, zorder=4))
+    ax.add_patch(
+        Rectangle(
+            (x - 0.02 * (x1 - x0), y - 0.015 * (y1 - y0)),
+            length_m + 0.06 * (x1 - x0),
+            0.07 * (y1 - y0),
+            facecolor="white",
+            alpha=0.85,
+            lw=0,
+            zorder=4,
+        )
+    )
     ax.add_patch(Rectangle((x, y), half, height, facecolor=COLORS["ink"], edgecolor=COLORS["ink"], lw=0.5, zorder=5))
     ax.add_patch(Rectangle((x + half, y), half, height, facecolor="white", edgecolor=COLORS["ink"], lw=0.5, zorder=5))
     for offset, label in [(0, "0"), (half, f"{half / 1000:g}"), (length_m, f"{length_m / 1000:g} km")]:
@@ -61,9 +72,17 @@ def scale_bar(ax, length_m=2000):
 
 def north_arrow(ax):
     """Arrow pointing up. In UTM 17N here, grid north is within 0.2° of true north."""
-    ax.annotate("N", xy=(0.92, 0.95), xytext=(0.92, 0.84), xycoords="axes fraction",
-                ha="center", va="center", fontsize=8, fontweight="bold",
-                arrowprops={"arrowstyle": "-|>", "color": COLORS["ink"], "lw": 1})
+    ax.annotate(
+        "N",
+        xy=(0.92, 0.95),
+        xytext=(0.92, 0.84),
+        xycoords="axes fraction",
+        ha="center",
+        va="center",
+        fontsize=8,
+        fontweight="bold",
+        arrowprops={"arrowstyle": "-|>", "color": COLORS["ink"], "lw": 1},
+    )
 
 
 def finish_map(ax, scale_m=2000):
@@ -122,17 +141,25 @@ def small_multiples(ctx):
     rows = -(-(len(levels) + 1) // columns)  # ceiling division; +1 for the legend
     fig, axes = plt.subplots(rows, columns, figsize=A4_LANDSCAPE)
     axes = axes.ravel()
-    for ax, level in zip(axes, levels):
+    for ax, level in zip(axes, levels, strict=False):  # spare axes hold the legend
         base_map(ax, ctx)
         flood_layers(ax, ctx, level)
-        ax.set_title(f"{level:g} ft sea-level rise: {loss_pct(ctx['table'], level):.1f}% of land newly inundated",
-                     fontsize=8, loc="left")
+        ax.set_title(
+            f"{level:g} ft sea-level rise: {loss_pct(ctx['table'], level):.1f}% of land newly inundated",
+            fontsize=8,
+            loc="left",
+        )
         finish_map(ax)
-    for ax in axes[len(levels):]:
+    for ax in axes[len(levels) :]:
         ax.axis("off")
     axes[len(levels)].legend(handles=legend_handles(), loc="center left", frameon=False, fontsize=8)
-    fig.suptitle("St. Augustine, Florida: land inundated by sea-level rise above MHHW",
-                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.suptitle(
+        "St. Augustine, Florida: land inundated by sea-level rise above MHHW",
+        x=0.01,
+        ha="left",
+        fontsize=12,
+        fontweight="bold",
+    )
     fig.subplots_adjust(left=0.01, right=0.99, top=0.91, bottom=0.04, wspace=0.03, hspace=0.14)
     source_line(fig)
     return save(fig, ctx["out_dir"], "fig1_inundation_small_multiples")
@@ -146,8 +173,16 @@ def land_loss_chart(ctx):
     slr = [loss_pct(table, lv, "slr") for lv in levels]
     low = [loss_pct(table, lv, "low") for lv in levels]
     ax.bar(x, slr, width=0.6, color=COLORS["slr"], edgecolor="white", lw=1.5, label="Ocean-connected (slr)")
-    ax.bar(x, low, width=0.6, bottom=slr, color=COLORS["low"], edgecolor="white", lw=1.5,
-           label="Low-lying, unconnected (low)")
+    ax.bar(
+        x,
+        low,
+        width=0.6,
+        bottom=slr,
+        color=COLORS["low"],
+        edgecolor="white",
+        lw=1.5,
+        label="Low-lying, unconnected (low)",
+    )
     for i, level in enumerate(levels):
         ax.text(i, slr[i] + low[i] + 1, f"{loss_pct(table, level):.1f}%", ha="center", fontsize=10)
     ax.set_xticks(list(x), [f"{lv:g} ft" for lv in levels], fontsize=10)
@@ -160,8 +195,13 @@ def land_loss_chart(ctx):
         ax.spines[side].set_visible(False)
     ax.legend(frameon=False, fontsize=10, loc="upper left")
     land = table["land_km2"].iloc[0]
-    ax.set_title(f"St. Augustine land loss by sea-level rise (city land = {land:.2f} km², "
-                 "excluding land already inundated at 0 ft)", loc="left", fontsize=12, fontweight="bold")
+    ax.set_title(
+        f"St. Augustine land loss by sea-level rise (city land = {land:.2f} km², "
+        "excluding land already inundated at 0 ft)",
+        loc="left",
+        fontsize=12,
+        fontweight="bold",
+    )
     fig.subplots_adjust(left=0.08, right=0.97, top=0.9, bottom=0.12)
     source_line(fig, SOURCE.replace(" © OpenStreetMap contributors (ODbL).", ""))
     return save(fig, ctx["out_dir"], "fig2_land_loss_by_level")
@@ -215,14 +255,16 @@ def sites_map(ctx, level=3):
     zoom = downtown_bounds(points)
     base_map(zoom_ax, ctx, bounds=zoom)
     draw_sites(zoom_ax, ctx, level, hit)
-    city_ax.add_patch(Rectangle(zoom[:2], zoom[2] - zoom[0], zoom[3] - zoom[1],
-                                fill=False, edgecolor=COLORS["ink"], lw=0.8, ls="--"))
+    city_ax.add_patch(
+        Rectangle(zoom[:2], zoom[2] - zoom[0], zoom[3] - zoom[1], fill=False, edgecolor=COLORS["ink"], lw=0.8, ls="--")
+    )
     city_ax.set_title("City", loc="left", fontsize=9)
     zoom_ax.set_title("Downtown (dashed box)", loc="left", fontsize=9)
     finish_map(city_ax)
     finish_map(zoom_ax, scale_m=500)
 
-    handles = legend_handles()[:3] + [
+    handles = [
+        *legend_handles()[:3],
         Line2D([], [], marker="^", ls="", color=COLORS["ink"], label="Historic site at risk"),
         Line2D([], [], marker="o", ls="", mfc="white", mec=COLORS["muted"], label="Historic site not at risk"),
         Patch(facecolor="none", edgecolor=COLORS["park"], hatch="////", label="Park at risk"),
@@ -230,8 +272,13 @@ def sites_map(ctx, level=3):
     ]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.76, 0.89), fontsize=7, frameon=False)
     fig.text(0.765, 0.64, site_list(at_level, sites), va="top", fontsize=6.5, linespacing=1.35)
-    fig.suptitle(f"Historic sites and parks touched by inundated land at {level:g} ft of sea-level rise",
-                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.suptitle(
+        f"Historic sites and parks touched by inundated land at {level:g} ft of sea-level rise",
+        x=0.01,
+        ha="left",
+        fontsize=12,
+        fontweight="bold",
+    )
     source_line(fig)
     return save(fig, ctx["out_dir"], f"fig3_sites_at_risk_{level:g}ft")
 

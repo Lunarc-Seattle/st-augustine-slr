@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "St. Augustine sea-level-rise scenarios"
+abstract: "Reproducible pipeline that measures land, historic sites and parks in St. Augustine, Florida exposed to 1-9 ft of sea-level rise, from NOAA, U.S. Census and OpenStreetMap data."
+authors:
+  - family-names: Yin
+    given-names: Jie
+version: 1.1.0
+license: MIT
+repository-code: "https://github.com/Lunarc-Seattle/st-augustine-slr"
+url: "https://lunarc-seattle.github.io/st-augustine-slr/"
+keywords:
+  - sea-level rise
+  - GIS
+  - geopandas
+  - climate risk

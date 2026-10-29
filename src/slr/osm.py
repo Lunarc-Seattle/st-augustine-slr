@@ -7,7 +7,7 @@ frozen copy, which keeps results reproducible.
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -49,15 +49,21 @@ def _query_overpass(polygon_wgs84, tags):
     return features, recorder.queries
 
 
-def fetch_sites(city, tags, cache_dir=Path("data/cache/osm")):
-    """Return OSM sites inside the city (in the city's CRS) plus query metadata."""
+def fetch_sites(city, tags, cache_dir=Path("data/cache/osm"), endpoint=None):
+    """Return OSM sites inside the city (in the city's CRS) plus query metadata.
+
+    ``endpoint`` overrides the Overpass API URL, e.g. a mirror when the main
+    server is busy. It only matters for the first, uncached query.
+    """
     cache_dir = Path(cache_dir)
     data_path = cache_dir / "osm_sites.geojson"
     meta_path = cache_dir / "osm_sites.meta.json"
     if not data_path.exists() or not meta_path.exists():
         cache_dir.mkdir(parents=True, exist_ok=True)
+        if endpoint:
+            ox.settings.overpass_url = endpoint
         polygon = city.to_crs("EPSG:4326").geometry.iloc[0]
-        queried = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        queried = datetime.now(UTC).isoformat(timespec="seconds")
         features, queries = _query_overpass(polygon, tags)
         features = features.reset_index().rename(columns={"element": "osm_type", "id": "osm_id"})
         for column in KEEP_COLUMNS:

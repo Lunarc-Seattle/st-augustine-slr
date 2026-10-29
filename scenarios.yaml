@@ -17,6 +17,10 @@ osm_tags:
   historic: true
   leisure: park
 
+# Overpass API used for the first OSM query (later runs read the frozen copy).
+# Point this at a mirror if the main server is at capacity.
+overpass_url: https://overpass-api.de/api
+
 sources:
   noaa_slr:
     url: https://chs.coast.noaa.gov/htdata/Inundation/SLR/BulkDownload/Sea_Level_Rise_Vectors/FL/FL_NE_slr_data_dist.zip

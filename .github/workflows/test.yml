@@ -5,12 +5,29 @@ on:
   pull_request:
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.14"
-      # Tests use only tests/fixtures, so no data download is needed here.
-      - run: make test
+      - run: pip install ruff==0.17.3
+      - run: ruff check src tests scripts
+      - run: ruff format --check src tests scripts
+
+  test:
+    # Tests use only tests/fixtures, so no data download is needed here.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt && pip install --no-deps -e .
+      - run: pytest -q --cov --cov-report=term-missing:skip-covered

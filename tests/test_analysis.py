@@ -50,8 +50,7 @@ def test_sites_in_counts_touching_features():
 def _table(new_by_level, kind="slr"):
     """Minimal land-loss table for exercising the checks."""
     return pd.DataFrame(
-        {"level_ft": list(new_by_level), "kind": kind,
-         "new_inundation_km2": list(new_by_level.values())}
+        {"level_ft": list(new_by_level), "kind": kind, "new_inundation_km2": list(new_by_level.values())}
     )
 
 

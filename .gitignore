@@ -44,3 +44,6 @@ data/cache/
 
 ### Pipeline outputs (re-created by `make run`) ###
 outputs/
+*.egg-info/
+.coverage
+.ruff_cache/

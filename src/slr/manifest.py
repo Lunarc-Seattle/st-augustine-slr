@@ -3,7 +3,7 @@
 import json
 import platform
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
 
@@ -11,14 +11,15 @@ import pyogrio
 
 from slr.download import read_meta, sha256
 
-PACKAGES = ["geopandas", "pyogrio", "shapely", "pyproj", "pandas", "numpy",
-            "osmnx", "matplotlib", "PyYAML", "requests"]
+PACKAGES = ["geopandas", "pyogrio", "shapely", "pyproj", "pandas", "numpy", "osmnx", "matplotlib", "PyYAML", "requests"]
 
 
 def git_commit():
     """Current commit, plus whether uncommitted changes could affect the run."""
+
     def git(*args):
         return subprocess.run(["git", *args], capture_output=True, text=True).stdout.strip()
+
     return {"commit": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
 
 
@@ -27,7 +28,7 @@ def write_manifest(context, output_files):
     inputs = {key: read_meta(path) for key, path in context["paths"].items()}
     inputs["osm"] = context["osm_meta"]
     manifest = {
-        "run_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "run_utc": datetime.now(UTC).isoformat(timespec="seconds"),
         "config": {k: v for k, v in context["cfg"].items() if k != "all_levels_ft"},
         "inputs": inputs,
         "outputs": {Path(f).name: sha256(f) for f in sorted(output_files)},

@@ -40,8 +40,9 @@ def test_matches_saved_baseline(table):
     """Any change in method or libraries that moves results by > 1 m² fails here."""
     baseline = pd.read_csv(FIXTURES / "baseline_land_loss.csv")
     current = table.reset_index(drop=True)
-    assert list(current[["level_ft", "kind"]].itertuples(index=False)) == \
-        list(baseline[["level_ft", "kind"]].itertuples(index=False))
+    assert list(current[["level_ft", "kind"]].itertuples(index=False)) == list(
+        baseline[["level_ft", "kind"]].itertuples(index=False)
+    )
     for column in AREA_COLUMNS:
         diff = (current[column] - baseline[column]).abs().max()
         assert diff < TOLERANCE_KM2, f"{column} differs by {diff} km²"

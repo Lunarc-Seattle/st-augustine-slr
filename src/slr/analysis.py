@@ -1,6 +1,5 @@
 """Area and overlay calculations. All inputs must be in a metric CRS."""
 
-import geopandas as gpd
 import pandas as pd
 from shapely.geometry import MultiPolygon
 
