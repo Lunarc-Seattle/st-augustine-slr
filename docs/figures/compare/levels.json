@@ -42,19 +42,23 @@
   "landmarks": [
     {
       "name": "Ponce de Le\u00f3n landing, 1513",
-      "floods_at": 3
+      "floods_at": 3,
+      "sea_at": 3
     },
     {
       "name": "Castillo de San Marcos",
-      "floods_at": 2
+      "floods_at": 2,
+      "sea_at": 5
     },
     {
       "name": "Plaza de la Constituci\u00f3n",
-      "floods_at": 3
+      "floods_at": 3,
+      "sea_at": 3
     },
     {
       "name": "Lincolnville Historic District",
-      "floods_at": 2
+      "floods_at": 2,
+      "sea_at": 2
     }
   ],
   "source": "outputs/covers/land_loss_every_foot.csv"

@@ -153,12 +153,12 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   text-decoration: underline dotted var(--muted); text-underline-offset: 3px;
 }
 
-/* Scroll story: the frame stays put while the steps scroll past and raise the water */
+/* Rising story: step through the levels with Next, the timeline, arrow keys or a swipe */
 .story { display: grid; gap: 1rem; }
-.story-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(15rem, 1fr); gap: 2rem; align-items: start; }
-.story-fig { position: sticky; top: 1.5rem; margin: 0; }
+.story-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(16rem, 1fr); gap: 1.5rem; align-items: center; }
+.story-fig { margin: 0; }
 .story-frame {
-  position: relative; aspect-ratio: 12 / 7; overflow: hidden; background: #ffffff;
+  position: relative; aspect-ratio: 12 / 7; overflow: hidden; background: #ffffff; cursor: pointer; touch-action: pan-y;
   border: 1px solid var(--rule); border-radius: 8px; box-shadow: var(--shadow);
 }
 .story-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -172,26 +172,43 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   position: absolute; right: 14px; transform: translateY(50%); bottom: 0; white-space: nowrap;
   font: 600 0.78rem/1 var(--font-mono); color: #ffffff; background: #0f6e7a; padding: 0.3rem 0.45rem; border-radius: 4px;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .staff i, .staff b { transition: height 0.6s ease, bottom 0.6s ease; }
-  .step { transition: opacity 0.3s ease, border-color 0.3s ease; }
-}
-.steps { list-style: none; margin: 0; padding: 12vh 0 40vh; display: grid; gap: 45vh; }
+.story-side { display: grid; gap: 0.9rem; min-width: 0; }
+.story-count { font: 0.75rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .step {
-  background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1.1rem 1.2rem;
-  display: grid; gap: 0.35rem; opacity: 0.4;
+  background: var(--surface); border: 1px solid var(--accent); border-radius: 8px; padding: 1.1rem 1.2rem;
+  display: grid; gap: 0.4rem; min-height: 13rem; align-content: start;
 }
-.step.on { opacity: 1; border-color: var(--accent); }
 .step .lv { font: 400 2.2rem/1 var(--font-display); color: var(--teal); }
 .step .big { font-family: var(--font-display); font-size: 1.05rem; }
 .step .big b { font-size: 1.5rem; font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
 .step .reach { font-size: 0.92rem; color: var(--muted); }
 .step .reach em { font-family: var(--font-display); color: var(--ink); }
+.story-nav { display: flex; gap: 0.5rem; }
+.story-nav .play { flex: 1; justify-content: center; padding-block: 0.8rem; }
+/* level timeline: a line that fills as the water rises, one stop per step */
+.story-dots {
+  --done: 0%;
+  position: relative; display: flex; justify-content: space-between; gap: 0.25rem; padding-top: 0.2rem;
+}
+.story-dots::before, .story-dots::after {
+  content: ""; position: absolute; left: 1rem; right: 1rem; top: calc(0.2rem + 0.95rem); height: 2px; background: var(--rule);
+}
+.story-dots::after { right: auto; width: calc((100% - 2rem) * var(--done) / 100%); background: var(--flood); }
+.story-dots button {
+  position: relative; z-index: 1; font: 500 0.78rem/1 var(--font-mono); padding: 0.55rem 0.45rem; min-width: 2.2rem;
+  border-radius: 999px; background: var(--surface);
+}
+.story-dots button.done { background: var(--flood); border-color: var(--flood); color: #ffffff; }
+.story-dots button[aria-current="step"] { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+@media (prefers-reduced-motion: no-preference) {
+  .staff i, .staff b { transition: height 0.6s ease, bottom 0.6s ease; }
+  .story-dots::after { transition: width 0.6s ease; }
+  .step.in { animation: card-in 0.35s ease; }
+  @keyframes card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
 @media (max-width: 760px) {
-  .story-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .story-fig { top: 0; z-index: 2; background: var(--bg); padding-block: 0.5rem; }
-  .steps { padding: 8vh 0 30vh; gap: 60vh; }
-  .step { background: color-mix(in srgb, var(--surface) 94%, transparent); }
+  .story-grid { grid-template-columns: minmax(0, 1fr); }
+  .step { min-height: 0; }
 }
 
 @media (max-width: 480px) {
@@ -310,8 +327,8 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   <section class="story" aria-labelledby="story-title" id="story" hidden>
     <div class="compare-head">
       <span class="num">02 · Rising</span>
-      <h2 id="story-title">Scroll to <em>raise the water</em></h2>
-      <p class="note">The same view, one step at a time. Each card lifts the sea to its level; the share of land and the landmarks come from the same tables as the rest of the page.</p>
+      <h2 id="story-title">Raise the water, <em>one step at a time</em></h2>
+      <p class="note">Press <b>Raise</b>, tap the picture, or use the arrow keys: six steps from today to +9 ft. Each card says how much of the city goes under and which landmarks the water reaches, from the same tables as the rest of the page.</p>
     </div>
     <div class="story-grid">
       <figure class="story-fig">
@@ -320,7 +337,15 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
           <div class="staff" aria-hidden="true"><i id="story-fill"></i><b id="story-mark">0 ft</b></div>
         </div>
       </figure>
-      <ol class="steps" id="story-steps"></ol>
+      <div class="story-side">
+        <span class="story-count" id="story-count">Step 1 of 6</span>
+        <div class="step" id="story-card" aria-live="polite"></div>
+        <div class="story-nav">
+          <button type="button" id="story-prev" aria-label="Back one step">←</button>
+          <button type="button" class="play" id="story-next"><span>Raise to +1 ft</span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></svg></button>
+        </div>
+        <div class="story-dots" id="story-dots" role="group" aria-label="Jump to a level"></div>
+      </div>
     </div>
   </section>
 
@@ -667,63 +692,112 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     });
   });
 
-  // ---- scroll story: each card raises the water on the pinned frame ----
+  // ---- step through the rise: Next / Back, the level timeline, arrow keys or a swipe ----
   function buildStory() {
     var section = document.getElementById("story");
-    var list = document.getElementById("story-steps");
     var holder = document.getElementById("story-stills");
     var fill = document.getElementById("story-fill");
     var mark = document.getElementById("story-mark");
-    if (!("IntersectionObserver" in window) || !levels.length) return;
+    var card = document.getElementById("story-card");
+    var count = document.getElementById("story-count");
+    var prevBtn = document.getElementById("story-prev");
+    var nextBtn = document.getElementById("story-next");
+    var dots = document.getElementById("story-dots");
+    var frame = section.querySelector(".story-frame");
+    if (!levels.length) return;
     var top = levels[levels.length - 1].ft;
     var steps = [0].concat(levels.filter(function (l) { return l.ft % 2 === 1; }).map(function (l) { return l.ft; }));
-    var prev = -1;
 
-    function names(list) {
-      return list.map(function (m) {
-        var from = m.floods_at;
-        return "<em>" + esc(m.name) + "</em>" + (from != null && from < m.shownAt ? " (from +" + from + " ft)" : "");
-      }).join(", ");
+    function em(m) { return "<em>" + esc(m.name) + "</em>"; }
+    function since(level, ft) { return level < ft ? " (from +" + level + " ft)" : ""; }
+    function joined(list) {
+      return list.length < 2 ? list.join("") : list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
     }
 
-    steps.forEach(function (ft, i) {
-      var reached = landmarks.filter(function (m) { return m.floods_at != null && m.floods_at > prev && m.floods_at <= ft; })
-        .map(function (m) { return { name: m.name, floods_at: m.floods_at, shownAt: ft }; });
-      prev = ft;
-      var li = document.createElement("li");
-      li.className = "step";
-      li.dataset.ft = ft;
+    // what changes between the previous step and this one: the sea reaching a landmark, or
+    // low-lying ground there flooding while it is still cut off from the sea (NOAA's low class)
+    function events(prev, ft) {
+      var out = [];
+      var sea = landmarks.filter(function (m) { return m.sea_at != null && m.sea_at > prev && m.sea_at <= ft; });
+      var low = landmarks.filter(function (m) {
+        return m.floods_at != null && m.floods_at > prev && m.floods_at <= ft && (m.sea_at == null || m.sea_at > ft);
+      });
+      if (sea.length) out.push("The sea reaches " + joined(sea.map(function (m) { return em(m) + since(m.sea_at, ft); })) + ".");
+      if (low.length) {
+        out.push("Low-lying ground at " + joined(low.map(function (m) { return em(m) + since(m.floods_at, ft); })) +
+          " is under water, not yet connected to the sea.");
+      }
+      return out;
+    }
+
+    var cards = steps.map(function (ft, i) {
       var lv = ft === 0 ? "Today" : "+" + ft + " ft";
       var big = ft === 0
         ? "<b>" + (todayKm2 == null ? "" : todayKm2.toFixed(2) + " km²") + "</b> of city land, mostly tidal marsh, already under water at mean higher high water"
         : "<b>" + byFt(ft).pct.toFixed(1) + "%</b> of the city's land newly under water";
-      var reach = reached.length ? "Water reaches " + names(reached)
-        : ft === 0 ? "None of the landmarks in view is wet yet." : "No new landmark in view is reached.";
+      var ev = ft === 0 ? [] : events(steps[i - 1], ft);
+      if (!ev.length) ev.push(ft === 0 ? "None of the landmarks in view is wet yet." : "No new landmark in view is reached.");
       if (i === steps.length - 1) {
         var dry = landmarks.filter(function (m) { return m.floods_at == null; });
-        if (dry.length) reach += ". Still dry at +" + ft + " ft: " + dry.map(function (m) { return "<em>" + esc(m.name) + "</em>"; }).join(", ");
+        if (dry.length) ev.push("Still dry at +" + ft + " ft: " + joined(dry.map(em)) + ".");
       }
-      li.innerHTML = '<span class="lv">' + lv + '</span><span class="big">' + big + '</span><span class="reach">' + reach + "</span>";
-      list.append(li);
+      return '<span class="lv">' + lv + '</span><span class="big">' + big + "</span>" +
+        ev.map(function (t) { return '<span class="reach">' + t + "</span>"; }).join("");
     });
 
-    function activate(ft) {
-      list.querySelectorAll(".step").forEach(function (li) { li.classList.toggle("on", Number(li.dataset.ft) === ft); });
+    steps.forEach(function (ft, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.id = "story-dot-" + ft;
+      b.textContent = ft === 0 ? "Today" : "+" + ft;
+      b.setAttribute("aria-label", ft === 0 ? "Today" : "+" + ft + " ft");
+      b.addEventListener("click", function () { go(i); });
+      dots.append(b);
+    });
+
+    var at = 0;
+    function go(i) {
+      at = Math.max(0, Math.min(steps.length - 1, i));
+      var ft = steps[at];
+      card.innerHTML = cards[at];
+      card.classList.remove("in");
+      card.getBoundingClientRect();  // restart the card's entrance
+      card.classList.add("in");
       fadeTo(holder, file(ft), altFor(ft));
       var h = (ft / top) * 100 + "%";
       fill.style.height = h;
       mark.style.bottom = h;
       mark.textContent = ft === 0 ? "Today" : "+" + ft + " ft";
-      var next = steps[steps.indexOf(ft) + 1];
+      count.textContent = "Step " + (at + 1) + " of " + steps.length;
+      prevBtn.disabled = at === 0;
+      var next = steps[at + 1];
+      nextBtn.querySelector("span").textContent = next == null ? "Start again" : "Raise to +" + next + " ft";
+      dots.querySelectorAll("button").forEach(function (b, k) {
+        b.classList.toggle("done", k < at);
+        b.setAttribute("aria-current", k === at ? "step" : "false");
+      });
+      dots.style.setProperty("--done", (at / (steps.length - 1)) * 100 + "%");
       if (next != null) new Image().src = file(next);
     }
 
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) activate(Number(e.target.dataset.ft)); });
-    }, { rootMargin: "-45% 0px -45% 0px" });
-    list.querySelectorAll(".step").forEach(function (li) { io.observe(li); });
+    nextBtn.addEventListener("click", function () { go(at === steps.length - 1 ? 0 : at + 1); });
+    prevBtn.addEventListener("click", function () { go(at - 1); });
+    section.addEventListener("keydown", function (e) {
+      if (e.target.closest && e.target.closest("input, textarea")) return;
+      if (e.key === "ArrowRight") { go(at + 1); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { go(at - 1); e.preventDefault(); }
+    });
+    var x0 = null;
+    frame.addEventListener("pointerdown", function (e) { x0 = e.clientX; });
+    frame.addEventListener("pointerup", function (e) {
+      if (x0 == null) return;
+      var dx = e.clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 40) go(at + (dx < 0 ? 1 : -1));
+      else go(at === steps.length - 1 ? 0 : at + 1);  // a tap on the picture moves on too
+    });
     section.hidden = false;
-    activate(0);
+    go(0);
   }
 
   // numbers come from levels.json (written by make covers from scripts/covers/every_foot.py,

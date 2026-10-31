@@ -508,9 +508,17 @@ def make_compare(scale=2):
         print("compare", lv)
     PEARL_SHOW_LEVEL = True
     PEARLS["floods_at"] = saved
+    # floods_at: first level any flooded land touches the site; sea_at: first level the
+    # ocean-connected (slr) water does. Earlier than sea_at means low-lying, unconnected ground.
+    risk = pd.read_csv(EVERY_FOOT / "sites_every_foot.csv")
+    sea = risk[risk["kind"] == "slr"].groupby("name")["level_ft"].min()
+
+    def level_or_none(v):
+        return None if v is None or pd.isna(v) else int(v)
+
     landmarks = [
-        {"name": r["label"], "floods_at": None if pd.isna(f) else int(f)}
-        for (_, r), f in zip(PEARLS.iterrows(), [first[n] for n in PEARLS["name"]], strict=True)
+        {"name": r["label"], "floods_at": level_or_none(first[r["name"]]), "sea_at": level_or_none(sea.get(r["name"]))}
+        for _, r in PEARLS.iterrows()
     ]
     levels = [{"ft": lv, "pct": round(float(pct_every[lv]), 1)} for lv in COMPARE_LEVELS if lv > 0]
     today_km2 = float(table[(table["kind"] == "total") & (table["level_ft"] == 0)]["inundated_land_km2"].iloc[0])
