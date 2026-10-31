@@ -118,6 +118,15 @@ gpd.GeoSeries([city], crs=crs).boundary.plot(ax=ax, color=C["edge"], linewidth=0
 fig.savefig(OUT / "floodmap.png", dpi=100, facecolor=C["outside"], metadata={"Software": None})
 plt.close(fig)
 
+
+def shrink(path, colors=128):
+    """Flat colours only, so a 128-colour palette is visually lossless and about a quarter of the size."""
+    im = Image.open(path).convert("RGB")
+    im.quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).save(path, optimize=True)
+
+
+shrink(OUT / "floodmap.png")
+
 P = pearl_lib.load(26917, "outputs/covers/sites_every_foot.csv")
 info = {
     "crs": str(crs),

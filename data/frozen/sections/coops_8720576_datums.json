@@ -1,0 +1,108 @@
+{
+ "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/8720576/datums.json?units=metric",
+ "retrieved_utc": "2026-10-31T05:49:03.053726+00:00",
+ "accepted": "May 22 2012",
+ "superseded": "",
+ "epoch": "1983-2001",
+ "units": "meters",
+ "OrthometricDatum": "NAVD88",
+ "datums": [
+  {
+   "name": "STND",
+   "description": "Station Datum",
+   "value": 0.0
+  },
+  {
+   "name": "MHHW",
+   "description": "Mean Higher-High Water",
+   "value": 2.058
+  },
+  {
+   "name": "MHW",
+   "description": "Mean High Water",
+   "value": 1.955
+  },
+  {
+   "name": "DTL",
+   "description": "Mean Diurnal Tide Level",
+   "value": 1.299
+  },
+  {
+   "name": "MTL",
+   "description": "Mean Tide Level",
+   "value": 1.272
+  },
+  {
+   "name": "MSL",
+   "description": "Mean Sea Level",
+   "value": 1.279
+  },
+  {
+   "name": "MLW",
+   "description": "Mean Low Water",
+   "value": 0.59
+  },
+  {
+   "name": "MLLW",
+   "description": "Mean Lower-Low Water",
+   "value": 0.539
+  },
+  {
+   "name": "GT",
+   "description": "Great Diurnal Range",
+   "value": 1.518
+  },
+  {
+   "name": "MN",
+   "description": "Mean Range of Tide",
+   "value": 1.365
+  },
+  {
+   "name": "DHQ",
+   "description": "Mean Diurnal High Water Inequality",
+   "value": 0.103
+  },
+  {
+   "name": "DLQ",
+   "description": "Mean Diurnal Low Water Inequality",
+   "value": 0.05
+  },
+  {
+   "name": "HWI",
+   "description": "Greenwich High Water Interval (in hours)",
+   "value": 1.03
+  },
+  {
+   "name": "LWI",
+   "description": "Greenwich Low Water Interval (in hours)",
+   "value": 7.28
+  },
+  {
+   "name": "NAVD88",
+   "description": "North American Vertical Datum of 1988",
+   "value": 1.434
+  }
+ ],
+ "LAT": null,
+ "LATdate": "",
+ "LATtime": "",
+ "HAT": null,
+ "HATdate": "",
+ "HATtime": "",
+ "min": -0.268,
+ "mindate": "19770405",
+ "mintime": "19:06",
+ "max": 2.691,
+ "maxdate": "19781103",
+ "maxtime": "15:18",
+ "disclaimers": {
+  "disclaimers": [],
+  "self": null
+ },
+ "DatumAnalysisPeriod": [
+  "01/01/1977 - 12/31/1978"
+ ],
+ "NGSLink": "",
+ "ctrlStation": "8720220 Mayport (Ferry Depot), FL",
+ "self": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/8720576/datums.json"
+}
