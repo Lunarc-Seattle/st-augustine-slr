@@ -1631,7 +1631,9 @@ body { overflow-x: clip; }
     function draw() {
       var sec = S.sections[cur], L = Number(lvIn.value), lm = L * FT, sm = sec.samples;
       var dmax = sm[sm.length - 1].d;
-      var land = sm.filter(function (p) { return !p.water; });
+      // past the city limit there is no Census water, so ground below today's high tide is the bay
+      sm.forEach(function (p) { p.open = p.water || (!p.city && p.z < 0); });
+      var land = sm.filter(function (p) { return !p.open && p.city; });
       var zmax = Math.max.apply(null, land.map(function (p) { return p.z; }).concat([9 * FT + 0.5]));
       var zmin = -2;
       function sx(d) { return m.l + d / dmax * (w - m.l - m.r); }
@@ -1649,7 +1651,7 @@ body { overflow-x: clip; }
       var wetLand = 0, seaLand = 0;
       sm.forEach(function (p) {
         var top = null, fill = null;
-        if (p.water) { top = Math.max(lm, 0); fill = "#8fb2b6"; }
+        if (p.open) { top = Math.max(lm, 0); fill = "#8fb2b6"; }
         else if (p.first != null && p.first <= L) {
           top = Math.max(lm, p.z); wetLand++;
           var sea = p.sea != null && p.sea <= L;
@@ -1678,12 +1680,14 @@ body { overflow-x: clip; }
         svg("circle", { cx: sx(mk.d), cy: m.t + 4, r: 4, fill: "var(--accent)" }, s);
         svg("text", { x: sx(mk.d) + 7, y: m.t + 8, class: "lbl" }, s).textContent = mk.name;
       });
-      if (sec.west_water) svg("text", { x: sx(0) + 4, y: h - m.b - 8, class: "wname" }, s).textContent = sec.west_water;
-      if (sec.east_water) svg("text", { x: sx(dmax) - 4, y: h - m.b - 8, "text-anchor": "end", class: "wname" }, s).textContent = sec.east_water;
+      // Census FULLNAME abbreviates feature types (Riv, Crk); spell them out for the label only
+      function spell(n) { return n.replace(/\bRiv$/, "River").replace(/\bCrk$/, "Creek"); }
+      if (sec.west_water) svg("text", { x: sx(0) + 4, y: h - m.b - 8, class: "wname" }, s).textContent = spell(sec.west_water);
+      if (sec.east_water) svg("text", { x: sx(dmax) - 4, y: h - m.b - 8, "text-anchor": "end", class: "wname" }, s).textContent = spell(sec.east_water);
       for (var dd = 0; dd <= dmax; dd += 500) {
         svg("text", { x: sx(dd), y: h - 10, "text-anchor": "middle", class: "axis" }, s).textContent = dd === 0 ? "0" : dd / 1000 + " km";
       }
-      svg("text", { x: w - m.r, y: h - 10, "text-anchor": "end", class: "axis" }, s).textContent = "W ← → E · vertical ×" + Math.round(exag);
+      svg("text", { x: m.l, y: m.t - 12, class: "axis" }, s).textContent = "West ← → East · vertical scale ×" + Math.round(exag);
       var l = levels.filter(function (x) { return x.ft === L; })[0];
       lvOut.textContent = L === 0 ? "Today" : "+" + L + " ft";
       var share = land.length ? Math.round(wetLand / land.length * 100) : 0, seaShare = land.length ? Math.round(seaLand / land.length * 100) : 0;

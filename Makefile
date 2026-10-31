@@ -58,6 +58,7 @@ covers: venv
 	$(PY) scripts/covers/years.py
 	$(PY) scripts/covers/storms.py
 	$(PY) scripts/covers/landmark_photos.py
+	$(PY) scripts/covers/section.py
 	$(PY) scripts/covers/plan.py
 	$(PY) scripts/covers/persp.py
 	$(PY) scripts/covers/plan_photo.py

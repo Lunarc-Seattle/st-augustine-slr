@@ -15,6 +15,7 @@ Run from the repo root after every_foot.py: PYTHONPATH=src .venv/bin/python scri
 import json
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -59,34 +60,50 @@ def datums():
     return v["MHHW"] - v["NAVD88"], d["epoch"]
 
 
-def elevations(name, xs, y):
+def one_elevation(lon, lat):
+    """Ground elevation at one point; the service is slow and times out now and then, so retry."""
+    for attempt in range(12):
+        try:
+            r = requests.get(EPQS, params={"x": lon, "y": lat, "wkid": 4326, "units": "Meters"}, timeout=60)
+            r.raise_for_status()
+            return float(r.json()["value"])
+        except (requests.RequestException, ValueError, KeyError):
+            time.sleep(min(30, 3 * (attempt + 1)))
+    return None
+
+
+def elevations(name, xs, y, workers=8):
     """3DEP ground elevation (NAVD88 m) at each x along the line, frozen to CSV on first run.
 
-    The service times out now and then, so progress is checkpointed to a .part file and a
-    rerun picks up where it stopped.
+    Points are fetched WORKERS at a time and checkpointed to a .part file, so a rerun only
+    asks for the points still missing.
     """
     path = FROZEN / f"{name}_3dep.csv"
     if path.exists():
         return pd.read_csv(path)
     part = path.with_suffix(".part.csv")
-    rows = pd.read_csv(part).to_dict("records") if part.exists() else []
-    session = requests.Session()
-    for x in xs[len(rows) :]:
-        lon, lat = to_ll.transform(x, y)
-        for attempt in range(12):
-            try:
-                r = session.get(EPQS, params={"x": lon, "y": lat, "wkid": 4326, "units": "Meters"}, timeout=40)
-                r.raise_for_status()
-                value = float(r.json()["value"])
-                break
-            except (requests.RequestException, ValueError, KeyError):
-                time.sleep(min(30, 3 * (attempt + 1)))
-        else:
-            raise SystemExit(f"section: no elevation at {lon:.6f}, {lat:.6f}; rerun to resume")
-        rows.append({"x": round(x, 1), "y": round(y, 1), "lon": round(lon, 7), "lat": round(lat, 7), "navd88_m": value})
-        if len(rows) % 20 == 0:
-            pd.DataFrame(rows).to_csv(part, index=False, lineterminator="\n")
-    table = pd.DataFrame(rows)
+    done = {round(r["x"], 1): r for r in pd.read_csv(part).to_dict("records")} if part.exists() else {}
+    todo = [x for x in xs if round(x, 1) not in done]
+    with ThreadPoolExecutor(workers) as pool:
+        jobs = {pool.submit(one_elevation, *to_ll.transform(x, y)): x for x in todo}
+        for k, job in enumerate(as_completed(jobs), 1):
+            x = jobs[job]
+            value = job.result()
+            if value is not None:
+                lon, lat = to_ll.transform(x, y)
+                done[round(x, 1)] = {
+                    "x": round(x, 1),
+                    "y": round(y, 1),
+                    "lon": round(lon, 7),
+                    "lat": round(lat, 7),
+                    "navd88_m": value,
+                }
+            if k % 20 == 0 or k == len(todo):
+                pd.DataFrame(sorted(done.values(), key=lambda r: r["x"])).to_csv(part, index=False, lineterminator="\n")
+                print(f"  {name}: {len(done)}/{len(xs)}", flush=True)
+    if len(done) < len(xs):
+        raise SystemExit(f"section: {len(xs) - len(done)} points still missing for {name}; rerun to resume")
+    table = pd.DataFrame(sorted(done.values(), key=lambda r: r["x"]))
     table.to_csv(path, index=False, lineterminator="\n")
     part.unlink(missing_ok=True)
     (FROZEN / f"{name}_3dep.meta.json").write_text(

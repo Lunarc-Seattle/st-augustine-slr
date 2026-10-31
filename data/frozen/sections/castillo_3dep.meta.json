@@ -1,0 +1,7 @@
+{
+ "service": "https://epqs.nationalmap.gov/v1/json",
+ "dataset": "USGS 3DEP",
+ "units": "m, NAVD88",
+ "step_m": 8.0,
+ "retrieved_utc": "2026-10-31T08:25:58.910781+00:00"
+}
