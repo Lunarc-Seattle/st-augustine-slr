@@ -1,0 +1,74 @@
+{
+ "crs": "EPSG:26917",
+ "extent": [
+  466440.9020554777,
+  3302656.687556816,
+  474640.9020554777,
+  3314126.687556816
+ ],
+ "width": 820,
+ "height": 1147,
+ "m_per_px": 10.0,
+ "codes": {
+  "outside": 0,
+  "water": 1,
+  "dry": 30,
+  "level_offset": 10
+ },
+ "colors": {
+  "bands": [
+   "#0B4F5A",
+   "#0F6E7A",
+   "#138896",
+   "#18A7B5",
+   "#3FB9C4",
+   "#66C8D1",
+   "#8CD6DC",
+   "#B0E3E7",
+   "#D2EFF1"
+  ],
+  "sea": "#8FB2B6",
+  "today": "#E9B9A0",
+  "dry": "#F5F1E8",
+  "outside": "#FBFAF7",
+  "edge": "#33393F"
+ },
+ "landmarks": [
+  {
+   "name": "Ponce de León landing, 1513",
+   "fx": 0.4,
+   "fy": 0.4887
+  },
+  {
+   "name": "Castillo de San Marcos",
+   "fx": 0.4222,
+   "fy": 0.5766
+  },
+  {
+   "name": "Plaza de la Constitución",
+   "fx": 0.4176,
+   "fy": 0.6289
+  },
+  {
+   "name": "Lincolnville Historic District",
+   "fx": 0.3939,
+   "fy": 0.7049
+  },
+  {
+   "name": "Oglethorpe Battery",
+   "fx": 0.5682,
+   "fy": 0.6065
+  },
+  {
+   "name": "Lighthouse Park",
+   "fx": 0.7173,
+   "fy": 0.6938
+  },
+  {
+   "name": "Anastasia State Park",
+   "fx": 0.8366,
+   "fy": 0.7122
+  }
+ ],
+ "source": "outputs/covers/every_foot.gpkg (NOAA SLR Viewer FL_NE, Census TIGER/Line 2025)"
+}

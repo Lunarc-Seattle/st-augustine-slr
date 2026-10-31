@@ -1,0 +1,863 @@
+{
+ "source": "https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt",
+ "radius_km": 100,
+ "first_year": 1851,
+ "last_year": 2025,
+ "storms": [
+  {
+   "storm_id": "AL081853",
+   "name": "Unnamed",
+   "year": 1853,
+   "date": "1853-10-20",
+   "closest_km": 73.4,
+   "max_wind_kt": 90,
+   "category": "2"
+  },
+  {
+   "storm_id": "AL031854",
+   "name": "Unnamed",
+   "year": 1854,
+   "date": "1854-09-08",
+   "closest_km": 82.8,
+   "max_wind_kt": 110,
+   "category": "3"
+  },
+  {
+   "storm_id": "AL071867",
+   "name": "Unnamed",
+   "year": 1867,
+   "date": "1867-10-07",
+   "closest_km": 41.9,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL061871",
+   "name": "Unnamed",
+   "year": 1871,
+   "date": "1871-09-07",
+   "closest_km": 54.8,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011873",
+   "name": "Unnamed",
+   "year": 1873,
+   "date": "1873-06-02",
+   "closest_km": 83.8,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL041873",
+   "name": "Unnamed",
+   "year": 1873,
+   "date": "1873-09-23",
+   "closest_km": 50.5,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL061874",
+   "name": "Unnamed",
+   "year": 1874,
+   "date": "1874-09-28",
+   "closest_km": 71.0,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL071877",
+   "name": "Unnamed",
+   "year": 1877,
+   "date": "1877-10-27",
+   "closest_km": 21.7,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051878",
+   "name": "Unnamed",
+   "year": 1878,
+   "date": "1878-09-11",
+   "closest_km": 1.6,
+   "max_wind_kt": 80,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL071879",
+   "name": "Unnamed",
+   "year": 1879,
+   "date": "1879-10-28",
+   "closest_km": 10.7,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL091880",
+   "name": "Unnamed",
+   "year": 1880,
+   "date": "1880-10-09",
+   "closest_km": 2.0,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL031884",
+   "name": "Unnamed",
+   "year": 1884,
+   "date": "1884-09-10",
+   "closest_km": 95.8,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL021885",
+   "name": "Unnamed",
+   "year": 1885,
+   "date": "1885-08-25",
+   "closest_km": 58.6,
+   "max_wind_kt": 90,
+   "category": "2"
+  },
+  {
+   "storm_id": "AL061885",
+   "name": "Unnamed",
+   "year": 1885,
+   "date": "1885-09-30",
+   "closest_km": 42.3,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL041886",
+   "name": "Unnamed",
+   "year": 1886,
+   "date": "1886-07-19",
+   "closest_km": 14.1,
+   "max_wind_kt": 55,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL161887",
+   "name": "Unnamed",
+   "year": 1887,
+   "date": "1887-10-30",
+   "closest_km": 73.5,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL071888",
+   "name": "Unnamed",
+   "year": 1888,
+   "date": "1888-10-11",
+   "closest_km": 50.0,
+   "max_wind_kt": 70,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL021889",
+   "name": "Unnamed",
+   "year": 1889,
+   "date": "1889-06-17",
+   "closest_km": 35.4,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL061893",
+   "name": "Unnamed",
+   "year": 1893,
+   "date": "1893-08-27",
+   "closest_km": 66.7,
+   "max_wind_kt": 100,
+   "category": "3"
+  },
+  {
+   "storm_id": "AL091893",
+   "name": "Unnamed",
+   "year": 1893,
+   "date": "1893-10-13",
+   "closest_km": 61.1,
+   "max_wind_kt": 105,
+   "category": "3"
+  },
+  {
+   "storm_id": "AL041894",
+   "name": "Unnamed",
+   "year": 1894,
+   "date": "1894-09-26",
+   "closest_km": 19.6,
+   "max_wind_kt": 70,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL031897",
+   "name": "Unnamed",
+   "year": 1897,
+   "date": "1897-09-21",
+   "closest_km": 87.3,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL071898",
+   "name": "Unnamed",
+   "year": 1898,
+   "date": "1898-10-02",
+   "closest_km": 84.8,
+   "max_wind_kt": 115,
+   "category": "4"
+  },
+  {
+   "storm_id": "AL061899",
+   "name": "Unnamed",
+   "year": 1899,
+   "date": "1899-10-05",
+   "closest_km": 58.4,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL061900",
+   "name": "Unnamed",
+   "year": 1900,
+   "date": "1900-10-12",
+   "closest_km": 73.3,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL081906",
+   "name": "Unnamed",
+   "year": 1906,
+   "date": "1906-10-21",
+   "closest_km": 9.7,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL081909",
+   "name": "Unnamed",
+   "year": 1909,
+   "date": "1909-08-31",
+   "closest_km": 90.5,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051910",
+   "name": "Unnamed",
+   "year": 1910,
+   "date": "1910-10-19",
+   "closest_km": 56.3,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051912",
+   "name": "Unnamed",
+   "year": 1912,
+   "date": "1912-10-04",
+   "closest_km": 76.4,
+   "max_wind_kt": 30,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL011914",
+   "name": "Unnamed",
+   "year": 1914,
+   "date": "1914-09-17",
+   "closest_km": 59.9,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011915",
+   "name": "Unnamed",
+   "year": 1915,
+   "date": "1915-08-02",
+   "closest_km": 29.7,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011916",
+   "name": "Unnamed",
+   "year": 1916,
+   "date": "1916-05-15",
+   "closest_km": 52.1,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051920",
+   "name": "Unnamed",
+   "year": 1920,
+   "date": "1920-09-30",
+   "closest_km": 31.0,
+   "max_wind_kt": 45,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL011926",
+   "name": "Unnamed",
+   "year": 1926,
+   "date": "1926-07-28",
+   "closest_km": 41.0,
+   "max_wind_kt": 75,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL041928",
+   "name": "Unnamed",
+   "year": 1928,
+   "date": "1928-09-18",
+   "closest_km": 42.2,
+   "max_wind_kt": 70,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL021930",
+   "name": "Unnamed",
+   "year": 1930,
+   "date": "1930-09-10",
+   "closest_km": 66.7,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL031934",
+   "name": "Unnamed",
+   "year": 1934,
+   "date": "1934-07-23",
+   "closest_km": 1.5,
+   "max_wind_kt": 30,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL091936",
+   "name": "Unnamed",
+   "year": 1936,
+   "date": "1936-08-22",
+   "closest_km": 78.2,
+   "max_wind_kt": 45,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011937",
+   "name": "Unnamed",
+   "year": 1937,
+   "date": "1937-07-30",
+   "closest_km": 57.9,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL031937",
+   "name": "Unnamed",
+   "year": 1937,
+   "date": "1937-08-30",
+   "closest_km": 74.7,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL071937",
+   "name": "Unnamed",
+   "year": 1937,
+   "date": "1937-09-21",
+   "closest_km": 51.3,
+   "max_wind_kt": 20,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL131944",
+   "name": "Unnamed",
+   "year": 1944,
+   "date": "1944-10-19",
+   "closest_km": 34.2,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011945",
+   "name": "Unnamed",
+   "year": 1945,
+   "date": "1945-06-24",
+   "closest_km": 29.3,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL091945",
+   "name": "Unnamed",
+   "year": 1945,
+   "date": "1945-09-17",
+   "closest_km": 11.2,
+   "max_wind_kt": 65,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL061946",
+   "name": "Unnamed",
+   "year": 1946,
+   "date": "1946-10-08",
+   "closest_km": 90.3,
+   "max_wind_kt": 55,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL071946",
+   "name": "Unnamed",
+   "year": 1946,
+   "date": "1946-11-03",
+   "closest_km": 22.5,
+   "max_wind_kt": 20,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL061947",
+   "name": "Unnamed",
+   "year": 1947,
+   "date": "1947-09-24",
+   "closest_km": 99.7,
+   "max_wind_kt": 45,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL071947",
+   "name": "Unnamed",
+   "year": 1947,
+   "date": "1947-10-07",
+   "closest_km": 82.9,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051950",
+   "name": "Easy",
+   "year": 1950,
+   "date": "1950-09-07",
+   "closest_km": 44.9,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL111950",
+   "name": "King",
+   "year": 1950,
+   "date": "1950-10-19",
+   "closest_km": 86.0,
+   "max_wind_kt": 65,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL111956",
+   "name": "Unnamed",
+   "year": 1956,
+   "date": "1956-10-17",
+   "closest_km": 88.3,
+   "max_wind_kt": 50,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051960",
+   "name": "Donna",
+   "year": 1960,
+   "date": "1960-09-11",
+   "closest_km": 38.1,
+   "max_wind_kt": 75,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL011964",
+   "name": "Unnamed",
+   "year": 1964,
+   "date": "1964-06-07",
+   "closest_km": 21.3,
+   "max_wind_kt": 30,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL051964",
+   "name": "Cleo",
+   "year": 1964,
+   "date": "1964-08-28",
+   "closest_km": 1.6,
+   "max_wind_kt": 55,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL061964",
+   "name": "Dora",
+   "year": 1964,
+   "date": "1964-09-10",
+   "closest_km": 0.4,
+   "max_wind_kt": 95,
+   "category": "2"
+  },
+  {
+   "storm_id": "AL091965",
+   "name": "Unnamed",
+   "year": 1965,
+   "date": "1965-10-18",
+   "closest_km": 59.8,
+   "max_wind_kt": 55,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011968",
+   "name": "Abby",
+   "year": 1968,
+   "date": "1968-06-06",
+   "closest_km": 10.5,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL021968",
+   "name": "Brenda",
+   "year": 1968,
+   "date": "1968-06-20",
+   "closest_km": 43.0,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL051968",
+   "name": "Dolly",
+   "year": 1968,
+   "date": "1968-08-11",
+   "closest_km": 97.9,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL061968",
+   "name": "Unnamed",
+   "year": 1968,
+   "date": "1968-08-31",
+   "closest_km": 22.9,
+   "max_wind_kt": 25,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL141968",
+   "name": "Gladys",
+   "year": 1968,
+   "date": "1968-10-19",
+   "closest_km": 12.8,
+   "max_wind_kt": 70,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL241969",
+   "name": "Jenny",
+   "year": 1969,
+   "date": "1969-10-04",
+   "closest_km": 90.0,
+   "max_wind_kt": 25,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL011972",
+   "name": "Alpha",
+   "year": 1972,
+   "date": "1972-05-28",
+   "closest_km": 97.7,
+   "max_wind_kt": 50,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL131973",
+   "name": "Unnamed",
+   "year": 1973,
+   "date": "1973-09-26",
+   "closest_km": 20.4,
+   "max_wind_kt": 30,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL141976",
+   "name": "Unnamed",
+   "year": 1976,
+   "date": "1976-09-14",
+   "closest_km": 17.7,
+   "max_wind_kt": 25,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL091979",
+   "name": "David",
+   "year": 1979,
+   "date": "1979-09-04",
+   "closest_km": 42.7,
+   "max_wind_kt": 85,
+   "category": "2"
+  },
+  {
+   "storm_id": "AL011980",
+   "name": "Unnamed",
+   "year": 1980,
+   "date": "1980-07-18",
+   "closest_km": 44.9,
+   "max_wind_kt": 25,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL171980",
+   "name": "Unnamed",
+   "year": 1980,
+   "date": "1980-11-18",
+   "closest_km": 16.1,
+   "max_wind_kt": 20,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL071981",
+   "name": "Unnamed",
+   "year": 1981,
+   "date": "1981-07-03",
+   "closest_km": 42.2,
+   "max_wind_kt": 30,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL101981",
+   "name": "Dennis",
+   "year": 1981,
+   "date": "1981-08-19",
+   "closest_km": 49.9,
+   "max_wind_kt": 40,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL021982",
+   "name": "Unnamed",
+   "year": 1982,
+   "date": "1982-06-18",
+   "closest_km": 29.2,
+   "max_wind_kt": 60,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL011984",
+   "name": "Unnamed",
+   "year": 1984,
+   "date": "1984-06-13",
+   "closest_km": 11.6,
+   "max_wind_kt": 25,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL101984",
+   "name": "Diana",
+   "year": 1984,
+   "date": "1984-09-10",
+   "closest_km": 91.4,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL151984",
+   "name": "Isidore",
+   "year": 1984,
+   "date": "1984-09-28",
+   "closest_km": 58.2,
+   "max_wind_kt": 45,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL021985",
+   "name": "Bob",
+   "year": 1985,
+   "date": "1985-07-24",
+   "closest_km": 83.8,
+   "max_wind_kt": 65,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL111985",
+   "name": "Isabel",
+   "year": 1985,
+   "date": "1985-10-10",
+   "closest_km": 51.8,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL141988",
+   "name": "Unnamed",
+   "year": 1988,
+   "date": "1988-08-14",
+   "closest_km": 65.9,
+   "max_wind_kt": 30,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL031988",
+   "name": "Chris",
+   "year": 1988,
+   "date": "1988-08-28",
+   "closest_km": 74.2,
+   "max_wind_kt": 45,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL011991",
+   "name": "Ana",
+   "year": 1991,
+   "date": "1991-07-02",
+   "closest_km": 18.5,
+   "max_wind_kt": 20,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL121994",
+   "name": "Gordon",
+   "year": 1994,
+   "date": "1994-11-21",
+   "closest_km": 27.0,
+   "max_wind_kt": 20,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL071998",
+   "name": "Georges",
+   "year": 1998,
+   "date": "1998-10-01",
+   "closest_km": 80.6,
+   "max_wind_kt": 20,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL162000",
+   "name": "Leslie",
+   "year": 2000,
+   "date": "2000-10-04",
+   "closest_km": 67.0,
+   "max_wind_kt": 30,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL052002",
+   "name": "Edouard",
+   "year": 2002,
+   "date": "2002-09-05",
+   "closest_km": 59.8,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL122002",
+   "name": "Kyle",
+   "year": 2002,
+   "date": "2002-10-11",
+   "closest_km": 87.4,
+   "max_wind_kt": 35,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL072003",
+   "name": "Unnamed",
+   "year": 2003,
+   "date": "2003-07-25",
+   "closest_km": 80.8,
+   "max_wind_kt": 25,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL032004",
+   "name": "Charley",
+   "year": 2004,
+   "date": "2004-08-14",
+   "closest_km": 39.9,
+   "max_wind_kt": 75,
+   "category": "1"
+  },
+  {
+   "storm_id": "AL222005",
+   "name": "Tammy",
+   "year": 2005,
+   "date": "2005-10-05",
+   "closest_km": 16.8,
+   "max_wind_kt": 45,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL022007",
+   "name": "Barry",
+   "year": 2007,
+   "date": "2007-06-02",
+   "closest_km": 63.6,
+   "max_wind_kt": 30,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL062008",
+   "name": "Fay",
+   "year": 2008,
+   "date": "2008-08-22",
+   "closest_km": 60.2,
+   "max_wind_kt": 55,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL022012",
+   "name": "Beryl",
+   "year": 2012,
+   "date": "2012-05-28",
+   "closest_km": 30.9,
+   "max_wind_kt": 60,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL042012",
+   "name": "Debby",
+   "year": 2012,
+   "date": "2012-06-27",
+   "closest_km": 44.9,
+   "max_wind_kt": 30,
+   "category": "TD"
+  },
+  {
+   "storm_id": "AL112016",
+   "name": "Julia",
+   "year": 2016,
+   "date": "2016-09-14",
+   "closest_km": 20.0,
+   "max_wind_kt": 45,
+   "category": "TS"
+  },
+  {
+   "storm_id": "AL142016",
+   "name": "Matthew",
+   "year": 2016,
+   "date": "2016-10-07",
+   "closest_km": 61.3,
+   "max_wind_kt": 100,
+   "category": "3"
+  },
+  {
+   "storm_id": "AL152020",
+   "name": "Omar",
+   "year": 2020,
+   "date": "2020-08-30",
+   "closest_km": 67.8,
+   "max_wind_kt": 25,
+   "category": "other"
+  },
+  {
+   "storm_id": "AL292020",
+   "name": "Eta",
+   "year": 2020,
+   "date": "2020-11-12",
+   "closest_km": 71.4,
+   "max_wind_kt": 35,
+   "category": "TS"
+  }
+ ]
+}

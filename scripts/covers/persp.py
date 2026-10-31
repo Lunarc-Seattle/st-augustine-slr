@@ -500,6 +500,13 @@ def make_compare(scale=2):
     for lv in COMPARE_LEVELS:
         tmp = out / "_tmp.png"
         fig = render(lv, with_text=False)
+        if lv == 0:  # where each pearl sits in the still, as fractions from the top left, for the page's hotspots
+            ax = fig.axes[0]
+            to_frac = ax.transData + ax.transAxes.inverted()
+            spots = {
+                n: to_frac.transform(project(x, y, PIN_M))
+                for n, x, y in zip(PEARLS["name"], PEARLS["x"], PEARLS["y"], strict=True)
+            }
         fig.savefig(tmp, dpi=100 * scale, facecolor=C["paper"])
         plt.close(fig)
         im = Image.open(tmp).convert("RGB")
@@ -517,7 +524,13 @@ def make_compare(scale=2):
         return None if v is None or pd.isna(v) else int(v)
 
     landmarks = [
-        {"name": r["label"], "floods_at": level_or_none(first[r["name"]]), "sea_at": level_or_none(sea.get(r["name"]))}
+        {
+            "name": r["label"],
+            "floods_at": level_or_none(first[r["name"]]),
+            "sea_at": level_or_none(sea.get(r["name"])),
+            "fx": round(float(spots[r["name"]][0]), 4),
+            "fy": round(1 - float(spots[r["name"]][1]), 4),
+        }
         for _, r in PEARLS.iterrows()
     ]
     levels = [{"ft": lv, "pct": round(float(pct_every[lv]), 1)} for lv in COMPARE_LEVELS if lv > 0]

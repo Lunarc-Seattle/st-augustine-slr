@@ -221,7 +221,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 
 /* Drag to compare: today (left) against a chosen level (right). The range input
    covers the image, so mouse, touch and arrow keys all move the divider. */
-.compare { display: grid; gap: 1rem; }
+.compare { display: grid; gap: 1rem; position: relative; }
 .compare-head { display: grid; gap: 0.5rem; }
 /* level picker drawn as a tide staff: one track, the chosen mark filled vermilion */
 .levels {
@@ -285,6 +285,93 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .play svg { width: 0.8rem; height: 0.8rem; fill: currentColor; }
 .cmp-stat { font-family: var(--font-display); font-size: 1.1rem; line-height: 1.7; min-height: 3.6em; }
 .cmp-stat b { font-size: 1.7rem; font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* Your spot: tap the map, read the first level that floods it */
+.spot { display: grid; gap: 1rem; position: relative; }
+.spot-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, 1fr); gap: 1.5rem; align-items: start; }
+.spot-map {
+  position: relative; margin: 0; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden;
+  background: #fbfaf7; box-shadow: var(--shadow); cursor: crosshair; touch-action: manipulation;
+}
+.spot-map { justify-self: center; max-width: calc(82vh * 820 / 1147); width: 100%; }
+.spot-map img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.spot-pin {
+  position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+  background: var(--accent); border: 3px solid #ffffff; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35); pointer-events: none;
+}
+.spot-mark {
+  position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; padding: 0;
+  background: #ffffff; border: 3px solid var(--accent); cursor: pointer;
+}
+.spot-mark:hover { transform: scale(1.25); }
+.spot-side { display: grid; gap: 0.9rem; min-width: 0; position: sticky; top: 1rem; }
+.spot-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1.1rem 1.2rem; display: grid; gap: 0.4rem; min-height: 10rem; align-content: start; }
+.spot-card .lv { font: 400 2.2rem/1 var(--font-display); color: var(--teal); }
+.spot-card .what { font-family: var(--font-display); font-size: 1.05rem; }
+.spot-card .why { font-size: 0.9rem; color: var(--muted); }
+.legend { display: grid; gap: 0.35rem; font-size: 0.82rem; color: var(--muted); }
+.legend .ramp { display: grid; grid-template-columns: repeat(9, 1fr); border-radius: 4px; overflow: hidden; height: 0.9rem; }
+.legend .ramp-labels { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.72rem; }
+.legend .keys { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
+.legend i { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 2px; margin-right: 0.35rem; vertical-align: -0.1rem; border: 1px solid var(--rule); }
+
+/* Guess first: the gauge stays veiled until the reader commits to a number */
+.guess { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.2rem; display: grid; gap: 0.7rem; }
+.guess-q { font-family: var(--font-display); font-size: 1.15rem; }
+.guess-q b { color: var(--accent); font-weight: 400; }
+.guess-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.guess-row input { flex: 1 1 12rem; accent-color: var(--accent); }
+.guess-row output { font: 400 1.6rem/1 var(--font-display); min-width: 3.5ch; color: var(--teal); font-variant-numeric: tabular-nums; }
+.guess-result { font-family: var(--font-display); font-size: 1.05rem; }
+.guess-result b { color: var(--accent); font-weight: 400; font-size: 1.4rem; }
+.guess .skip { font-size: 0.85rem; color: var(--muted); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; justify-self: start; }
+.gauge.veiled .rows, .gauge.veiled .key { filter: blur(7px); opacity: 0.6; pointer-events: none; user-select: none; }
+@media (prefers-reduced-motion: no-preference) { .gauge .rows, .gauge .key { transition: filter 0.6s ease, opacity 0.6s ease; } }
+.track { position: relative; }
+.guess-tick { position: absolute; top: -3px; bottom: -3px; width: 3px; margin-left: -1.5px; background: var(--ink); border-radius: 2px; }
+
+/* Storms: every track that passed within the radius, by year and closest approach */
+.storms { display: grid; gap: 1rem; }
+.storm-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.storm-chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 0.5rem 0.5rem 0.25rem; }
+.storm-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.storm-chart .axis { font: 11px var(--font-mono); fill: var(--muted); }
+.storm-chart .grid { stroke: var(--rule); }
+.storm-chart .dot { cursor: pointer; stroke: var(--surface); stroke-width: 1; }
+.storm-chart .dot.on { stroke: var(--ink); stroke-width: 2; }
+.storm-chart .lbl { font: italic 12px var(--font-display); fill: var(--ink); pointer-events: none; }
+.storm-info { font-family: var(--font-display); font-size: 1.05rem; min-height: 1.7em; }
+.storm-info b { color: var(--accent); font-weight: 400; }
+@media (max-width: 760px) { .spot-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* landmark rings on the comparison, and the card they open */
+.cmp .hotspots { position: absolute; inset: 0; pointer-events: none; }
+.cmp .hot {
+  position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; padding: 0; border-radius: 50%;
+  background: transparent; border: 2px solid rgba(255, 255, 255, 0.95); box-shadow: 0 0 0 2px rgba(228, 71, 43, 0.75);
+  pointer-events: auto; cursor: pointer;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cmp .hot { animation: hot-pulse 2.4s ease-in-out infinite; }
+  @keyframes hot-pulse { 50% { box-shadow: 0 0 0 7px rgba(228, 71, 43, 0.15); } }
+}
+.lm-card {
+  position: absolute; z-index: 5; width: min(300px, 80%); background: var(--surface); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); overflow: hidden;
+  display: grid; font-size: 0.9rem;
+}
+.lm-card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; position: static; height: auto; }
+.lm-card .body { padding: 0.8rem 0.9rem 0.9rem; display: grid; gap: 0.3rem; }
+.lm-card h3 { font-size: 1.15rem; padding-right: 1.6rem; }
+.lm-card .lm-when { color: var(--muted); }
+.lm-card .lm-when b { color: var(--accent); font-weight: 600; }
+.lm-card .credit { font-size: 0.72rem; color: var(--muted); }
+.lm-card .x {
+  position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; padding: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92); color: #33393f; font-size: 1rem; line-height: 1;
+}
+.when { display: grid; gap: 1rem; }
+.when-chart-line { fill: none; stroke-width: 1.5; }
 </style>
 </head>
 <body>
@@ -301,7 +388,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     <div class="compare-head">
       <span class="num">01 · Compare</span>
       <h2 id="compare-title">Drag <em>today</em> against the rising sea</h2>
-      <p class="note">The old town today against the same streets after sea-level rise. Drag the handle (or focus it and use the arrow keys), pick a level, or press play to watch the water rise a foot at a time. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
+      <p class="note">The old town today against the same streets after sea-level rise. Drag the handle (or focus it and use the arrow keys), pick a level, press play to watch the water rise a foot at a time, or tap a red ring for a landmark's story. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
     </div>
     <div class="cmp-bar">
       <button type="button" class="play" id="cmp-play" aria-pressed="false"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></svg><span>Play 1–9 ft</span></button>
@@ -349,11 +436,46 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     </div>
   </section>
 
+  <section class="spot" aria-labelledby="spot-title" id="spot" hidden>
+    <div class="compare-head">
+      <span class="num">03 · Your spot</span>
+      <h2 id="spot-title">Tap anywhere: <em>when does it go under?</em></h2>
+      <p class="note">Every patch of city land, coloured by the first level from 1 to 9 ft that floods it. Tap a street you know, or a red landmark ring. The map is 10 m per pixel, so treat a single building as approximate.</p>
+    </div>
+    <div class="spot-grid">
+      <figure class="spot-map" id="spot-map">
+        <img src="figures/floodmap.png" alt="Map of St. Augustine coloured by the level at which each area first floods, deep teal at 1 ft to pale aqua at 9 ft" id="spot-img" draggable="false">
+      </figure>
+      <div class="spot-side">
+        <div class="spot-card" id="spot-card" aria-live="polite">
+          <span class="lv">Tap the map</span>
+          <span class="why">The card tells you the first level that floods that spot, and whether the sea itself reaches it or low-lying ground floods first.</span>
+        </div>
+        <div class="legend" aria-hidden="true">
+          <span>First flooded at</span>
+          <div class="ramp" id="spot-ramp"></div>
+          <div class="ramp-labels"><span>+1 ft</span><span>+5 ft</span><span>+9 ft</span></div>
+          <div class="keys" id="spot-keys"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="gauge" aria-labelledby="gauge-title">
     <div class="gauge-head">
-      <span class="num">03 · Land</span>
+      <span class="num">04 · Land</span>
       <h2 id="gauge-title">New inundation by <em>sea-level rise</em></h2>
       <p class="note">Share of the city's 24.63 km² of land that floods at each level, not counting the 5.68 km² (mostly tidal marsh) already below today's mean higher high water. Click a level to see it in the comparison.</p>
+    </div>
+    <div class="guess" id="guess" hidden>
+      <p class="guess-q">Before you look: at <b>+3 ft</b>, how much of the city's land goes under?</p>
+      <div class="guess-row">
+        <input type="range" id="guess-range" min="0" max="100" step="1" value="10" aria-label="Your guess, percent of the city's land">
+        <output id="guess-out" for="guess-range">10%</output>
+        <button type="button" class="play" id="guess-go">Reveal</button>
+      </div>
+      <p class="guess-result" id="guess-result" aria-live="polite"></p>
+      <button type="button" class="skip" id="guess-skip">Skip, just show me</button>
     </div>
     <div class="rows" role="table" aria-label="Newly inundated share of city land by sea-level rise">
       <div class="row" role="row"><span class="lvl" role="rowheader">1 ft</span><div class="track" role="cell" aria-label="7.4% ocean-connected, 0.5% low-lying"><span class="seg-slr" style="width:7.43%"></span><span class="seg-low" style="width:0.55%"></span></div><span class="pct" role="cell">8.0%</span></div>
@@ -375,9 +497,36 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     <div class="fact"><b>0.14%</b><span>gap between computed city land and the Census <code>ALAND</code> figure</span></div>
   </section>
 
+  <section class="when" aria-labelledby="when-title" id="when" hidden>
+    <div class="compare-head">
+      <span class="num">05 · When</span>
+      <h2 id="when-title">When could the water <em>get this high?</em></h2>
+      <p class="note">NOAA's 2022 sea-level-rise scenarios for the one-degree cell over St. Augustine. Pick a scenario: each dot marks the year a level is reached (median), the band is the 17th–83rd percentile range. Click a level to see it in the comparison.</p>
+    </div>
+    <div class="levels" role="group" aria-label="NOAA scenario" id="when-scen"></div>
+    <div class="storm-chart" id="when-chart"></div>
+    <p class="storm-info" id="when-info" aria-live="polite"></p>
+    <p class="note" id="when-note"></p>
+  </section>
+
+  <section class="storms" aria-labelledby="storms-title" id="storms" hidden>
+    <div class="compare-head">
+      <span class="num">06 · Storms</span>
+      <h2 id="storms-title">Storms that have <em>already come close</em></h2>
+      <p class="note" id="storms-note"></p>
+    </div>
+    <div class="storm-bar levels" role="group" aria-label="Which storms to show">
+      <button type="button" id="storm-all" aria-pressed="true">All storms</button>
+      <button type="button" id="storm-hu" aria-pressed="false">Hurricanes only</button>
+    </div>
+    <div class="storm-chart" id="storm-chart"></div>
+    <p class="storm-info" id="storm-info" aria-live="polite">Tap a dot for the storm.</p>
+    <p class="note">Tracks and winds from NOAA's HURDAT2 best-track record. Higher on the chart means closer to the city; larger and redder means stronger winds while within range. The flood maps above are still water at a fixed height: storm surge would come on top of them, and this project does not model it.</p>
+  </section>
+
   <section class="plates" aria-labelledby="plates-title">
     <div class="compare-head">
-      <span class="num">04 · Figures</span>
+      <span class="num">07 · Figures</span>
       <h2 id="plates-title">Maps and charts, <em>in vector</em></h2>
     </div>
     <article class="plate" data-pdf="pdf/fig1_inundation_small_multiples.pdf">
@@ -671,6 +820,35 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     show(byFt(7) || levels[levels.length - 1]);
   }
 
+  // other sections (gauge, years, map, landmark cards) open a level here
+  window.slrShow = function (ft) {
+    var level = byFt(ft);
+    if (!level) return;
+    idle();
+    show(level);
+    box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  };
+
+  // ---- landmark rings on the picture; each opens its card (window.slrCard, below) ----
+  function hotspots() {
+    var layer = document.createElement("div");
+    layer.className = "hotspots";
+    landmarks.forEach(function (m) {
+      if (m.fx == null) return;
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "hot";
+      b.id = "hot-" + m.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      b.style.left = m.fx * 100 + "%";
+      b.style.top = m.fy * 100 + "%";
+      b.title = m.name;
+      b.setAttribute("aria-label", m.name + ": when the water reaches it");
+      b.addEventListener("click", function () { if (window.slrCard) window.slrCard(box, m, m.fx, m.fy); });
+      layer.append(b);
+    });
+    box.append(layer);
+  }
+
   // ---- the gauge rows open their level in the comparison ----
   rows.forEach(function (row) {
     var cell = row.querySelector(".lvl");
@@ -683,13 +861,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     b.setAttribute("aria-label", "Show +" + ft + " ft in the comparison");
     cell.textContent = "";
     cell.append(b);
-    row.addEventListener("click", function () {
-      var level = byFt(ft);
-      if (!level) return;
-      idle();
-      show(level);
-      box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-    });
+    row.addEventListener("click", function () { window.slrShow(ft); });
   });
 
   // ---- step through the rise: Next / Back, the level timeline, arrow keys or a swipe ----
@@ -811,12 +983,359 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
       landmarks = data.landmarks || [];
       box.querySelector(".before").src = src("today.jpg");
       build();
+      hotspots();
       buildStory();
     })
     .catch(function () {
       levels = [1, 3, 5, 7, 9].map(function (ft) { return { ft: ft, pct: null }; });
       build();
     });
+})();
+</script>
+<script>
+// Landmark cards, tap-anywhere map, guess-first, scenario years and storms.
+// Every number comes from a JSON file written by make covers; nothing here is typed in by hand.
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var NS = "http://www.w3.org/2000/svg";
+  function esc(t) { var d = document.createElement("span"); d.textContent = t; return d.innerHTML; }
+  function getJSON(url) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function svg(tag, attrs, parent) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.append(n);
+    return n;
+  }
+  function show(ft) { if (window.slrShow) window.slrShow(ft); }
+
+  // ---- landmark cards (Library of Congress photos frozen in data/frozen/loc, see SOURCES.md) ----
+  var PHOTOS = {
+    "Castillo de San Marcos": {
+      src: "figures/landmarks/castillo.jpg", url: "https://www.loc.gov/item/2020720780/",
+      alt: "The coquina walls and a corner bastion of the Castillo de San Marcos"
+    },
+    "Plaza de la Constitución": {
+      src: "figures/landmarks/plaza.jpg", url: "https://www.loc.gov/item/2020720801/",
+      alt: "The 1813 Constitution Monument under live oaks in the Plaza de la Constitución"
+    },
+    "Ponce de León landing, 1513": {
+      src: "figures/landmarks/ponce.jpg", url: "https://www.loc.gov/item/2020720884/",
+      alt: "Entrance arch of the Fountain of Youth Archaeological Park",
+      caption: "Pictured: the Fountain of Youth Archaeological Park, often identified as the likely site of the 1513 landing"
+    }
+  };
+
+  function whenHtml(m) {
+    if (m.floods_at == null) return "Still dry at +9 ft.";
+    if (m.sea_at === m.floods_at) return "The sea reaches it at <b>+" + m.sea_at + " ft</b>.";
+    return "Low-lying ground here floods from <b>+" + m.floods_at + " ft</b>, cut off from the sea; " +
+      (m.sea_at == null ? "the sea itself does not reach it by +9 ft." : "the sea itself arrives at <b>+" + m.sea_at + " ft</b>.");
+  }
+
+  var openCard = null;
+  function closeCard() { if (openCard) { openCard.remove(); openCard = null; } }
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeCard(); });
+  document.addEventListener("pointerdown", function (e) {
+    if (openCard && !openCard.contains(e.target) && !(e.target.closest && e.target.closest(".hot, .spot-mark"))) closeCard();
+  });
+
+  // frame: the picture the landmark sits on (fx, fy are fractions of it); the card goes into the
+  // frame's section, so the picture's overflow clipping never cuts it off
+  window.slrCard = function (frame, m, fx, fy) {
+    var container = frame.closest("section") || frame.parentNode;
+    closeCard();
+    var p = PHOTOS[m.name];
+    var see = m.sea_at != null ? m.sea_at : m.floods_at;
+    var c = document.createElement("div");
+    c.className = "lm-card";
+    c.setAttribute("role", "dialog");
+    c.setAttribute("aria-label", m.name);
+    c.innerHTML = (p ? '<img src="' + p.src + '" alt="' + esc(p.alt) + '">' : "") +
+      '<div class="body"><h3>' + esc(m.name) + '</h3><span class="lm-when">' + whenHtml(m) + "</span>" +
+      (see != null ? '<button type="button" class="see">See it at +' + see + " ft</button>" : "") +
+      (p ? '<span class="credit">' + (p.caption ? esc(p.caption) + ". " : "") +
+        'Photo: Carol M. Highsmith, 2020, <a href="' + p.url + '">Library of Congress</a></span>'
+        : '<span class="credit">The Library of Congress has no photo identified as this place.</span>') +
+      '</div><button type="button" class="x" aria-label="Close">×</button>';
+    var fr = frame.getBoundingClientRect(), co = container.getBoundingClientRect();
+    var px = fr.left - co.left + fx * fr.width, py = fr.top - co.top + fy * fr.height;
+    container.append(c);
+    var cw = c.offsetWidth, ch = c.offsetHeight;
+    var left = co.width < 520 ? (co.width - cw) / 2 : fx > 0.55 ? px - cw - 18 : px + 18;
+    var topY = fy > 0.5 ? py - ch - 18 : py + 18;
+    c.style.left = Math.max(0, Math.min(co.width - cw, left)) + "px";
+    c.style.top = Math.max(0, topY) + "px";
+    c.querySelector(".x").addEventListener("click", closeCard);
+    var btn = c.querySelector(".see");
+    if (btn) btn.addEventListener("click", function () { closeCard(); show(see); });
+    c.querySelector(".x").focus({ preventScroll: true });
+    openCard = c;
+  };
+
+  var data = Promise.all([
+    getJSON("figures/compare/levels.json"),
+    getJSON("figures/years.json").catch(function () { return null; })
+  ]);
+
+  // ---- tap anywhere: the data image holds, per 10 m pixel, the first level (red) and first sea level (green) ----
+  Promise.all([data, getJSON("figures/floodmap.json")]).then(function (res) {
+    var levels = res[0][0].levels, landmarks = res[0][0].landmarks || [], years = res[0][1], info = res[1];
+    var section = document.getElementById("spot");
+    var fig = document.getElementById("spot-map");
+    var cardEl = document.getElementById("spot-card");
+    var codes = info.codes, W = info.width, H = info.height, px = null;
+    var raw = new Image();
+    raw.onload = function () {
+      var cv = document.createElement("canvas");
+      cv.width = W; cv.height = H;
+      var ctx = cv.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(raw, 0, 0);
+      px = ctx.getImageData(0, 0, W, H).data;
+    };
+    raw.src = "figures/floodmap-data.png";
+
+    var ramp = document.getElementById("spot-ramp");
+    info.colors.bands.forEach(function (c) { var s = document.createElement("span"); s.style.background = c; ramp.append(s); });
+    var keys = document.getElementById("spot-keys");
+    [["today", "Under water today (mostly marsh)"], ["dry", "Dry at +9 ft"], ["sea", "Open water"]].forEach(function (k) {
+      var s = document.createElement("span");
+      s.innerHTML = '<i style="background:' + info.colors[k[0]] + '"></i>' + k[1];
+      keys.append(s);
+    });
+
+    var pin = document.createElement("span");
+    pin.className = "spot-pin";
+    pin.hidden = true;
+    fig.append(pin);
+
+    function yearOf(ft) {
+      if (!years) return "";
+      var y = years.scenarios[years.default].crossing[ft];
+      return y ? " Under NOAA's " + years.default + " scenario that is around <b>" + y + "</b>." : " NOAA's " + years.default + " scenario does not reach it by " + years.years[years.years.length - 1] + ".";
+    }
+
+    function describe(r, g) {
+      var lv, what = "", why = "", ft = null;
+      if (r === codes.outside) { lv = "Outside the city"; why = "The analysis covers land inside the city limits only."; }
+      else if (r === codes.water) { lv = "Open water"; why = "A river, creek or bay today: Census water, so it never counts as land lost."; }
+      else if (r === codes.dry) { lv = "Dry at +9 ft"; why = "This spot stays above every level mapped here, up to 9 ft above today's high tide."; }
+      else if (r === codes.level_offset) { lv = "Wet today"; why = "Already under water at today's mean higher high water, mostly tidal marsh."; }
+      else {
+        ft = r - codes.level_offset;
+        var sea = g === codes.dry ? null : g - codes.level_offset;
+        var l = levels.filter(function (x) { return x.ft === ft; })[0];
+        lv = "+" + ft + " ft";
+        what = "This spot first floods at +" + ft + " ft." + yearOf(ft);
+        why = sea === ft ? "The sea comes straight in at this level."
+          : sea == null ? "It floods as low-lying ground cut off from the sea; the sea itself does not reach it by +9 ft."
+          : "It floods first as low-lying ground cut off from the sea; the sea itself arrives at +" + sea + " ft.";
+        if (l && l.pct != null) why += " By then " + l.pct.toFixed(1) + "% of the city's land is newly under water.";
+      }
+      cardEl.innerHTML = '<span class="lv">' + lv + "</span>" + (what ? '<span class="what">' + what + "</span>" : "") +
+        '<span class="why">' + why + "</span>" + (ft ? '<button type="button" class="see" id="spot-see">See +' + ft + " ft in the comparison</button>" : "");
+      var b = document.getElementById("spot-see");
+      if (b) b.addEventListener("click", function () { show(ft); });
+    }
+
+    function at(fx, fy) {
+      pin.hidden = false;
+      pin.style.left = fx * 100 + "%";
+      pin.style.top = fy * 100 + "%";
+      if (!px) { cardEl.innerHTML = '<span class="why">Loading the map data…</span>'; return; }
+      var x = Math.min(W - 1, Math.max(0, Math.floor(fx * W))), y = Math.min(H - 1, Math.max(0, Math.floor(fy * H)));
+      var i = (y * W + x) * 4;
+      describe(px[i], px[i + 1]);
+    }
+
+    fig.addEventListener("click", function (e) {
+      if (e.target.closest(".spot-mark, .lm-card")) return;
+      var r = fig.getBoundingClientRect();
+      closeCard();
+      at((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+    });
+
+    var byName = {};
+    landmarks.forEach(function (m) { byName[m.name] = m; });
+    info.landmarks.forEach(function (p) {
+      var m = byName[p.name] || { name: p.name, floods_at: null, sea_at: null };
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "spot-mark";
+      b.id = "spot-mark-" + p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      b.style.left = p.fx * 100 + "%";
+      b.style.top = p.fy * 100 + "%";
+      b.setAttribute("aria-label", p.name);
+      b.title = p.name;
+      b.addEventListener("click", function () { at(p.fx, p.fy); window.slrCard(fig, m, p.fx, p.fy); });
+      fig.append(b);
+    });
+    section.hidden = false;
+  }).catch(function () {});
+
+  // ---- guess first: the gauge is veiled until the reader commits to a number ----
+  data.then(function (res) {
+    var l3 = res[0].levels.filter(function (l) { return l.ft === 3; })[0];
+    var box = document.getElementById("guess");
+    if (!l3 || l3.pct == null || !box) return;
+    var gauge = document.querySelector(".gauge");
+    var range = document.getElementById("guess-range"), out = document.getElementById("guess-out");
+    var go = document.getElementById("guess-go"), skip = document.getElementById("guess-skip");
+    var result = document.getElementById("guess-result");
+    gauge.classList.add("veiled");
+    box.hidden = false;
+    range.addEventListener("input", function () { out.textContent = range.value + "%"; });
+    function reveal(guessed) {
+      gauge.classList.remove("veiled");
+      go.disabled = true; range.disabled = true; skip.hidden = true;
+      var truth = l3.pct;
+      if (guessed == null) { result.innerHTML = "<b>" + truth.toFixed(1) + "%</b> of the city's land at +3 ft."; return; }
+      var gap = guessed - truth, size = Math.abs(gap).toFixed(1);
+      result.innerHTML = "<b>" + truth.toFixed(1) + "%</b>. You guessed " + guessed + "%: " +
+        (Math.abs(gap) < 3 ? "spot on." : size + " points " + (gap < 0 ? "too low." : "too high.")) +
+        " Your guess is the black tick on the +3 ft bar.";
+      var track = document.querySelector('.gauge .row[data-ft="3"] .track');
+      if (track) { var t = document.createElement("span"); t.className = "guess-tick"; t.style.left = guessed + "%"; track.append(t); }
+    }
+    go.addEventListener("click", function () { reveal(Number(range.value)); });
+    skip.addEventListener("click", function () { reveal(null); });
+  }).catch(function () {});
+
+  // ---- when: NOAA 2022 scenarios, the year each level is reached ----
+  data.then(function (res) {
+    var Y = res[1];
+    if (!Y) return;
+    var section = document.getElementById("when"), chart = document.getElementById("when-chart");
+    var group = document.getElementById("when-scen"), infoEl = document.getElementById("when-info");
+    var names = Object.keys(Y.scenarios), years = Y.years;
+    var w = 1000, h = 430, m = { l: 56, r: 24, t: 14, b: 34 };
+    var x0 = years[0], x1 = years[years.length - 1], top = 10;
+    function sx(y) { return m.l + (y - x0) / (x1 - x0) * (w - m.l - m.r); }
+    function sy(ft) { return h - m.b - Math.min(ft, top) / top * (h - m.t - m.b); }
+    var s = svg("svg", { viewBox: "0 0 " + w + " " + h, role: "img", "aria-label": "Sea-level rise by year under NOAA's five scenarios" }, chart);
+    var clip = svg("clipPath", { id: "when-clip" }, svg("defs", {}, s));
+    svg("rect", { x: m.l, y: m.t, width: w - m.l - m.r, height: h - m.t - m.b }, clip);
+    for (var ft = 1; ft <= 9; ft++) {
+      svg("line", { x1: m.l, x2: w - m.r, y1: sy(ft), y2: sy(ft), class: "grid" }, s);
+      svg("text", { x: m.l - 8, y: sy(ft) + 4, "text-anchor": "end", class: "axis" }, s).textContent = "+" + ft + " ft";
+    }
+    for (var yr = 2020; yr <= x1; yr += 20) {
+      if (yr < x0) continue;
+      svg("text", { x: sx(yr), y: h - 10, "text-anchor": "middle", class: "axis" }, s).textContent = yr;
+    }
+    var plot = svg("g", { "clip-path": "url(#when-clip)" }, s);
+    var band = svg("path", { fill: "var(--flood)", opacity: 0.16 }, plot);
+    var lines = {};
+    names.forEach(function (n) {
+      lines[n] = svg("path", { class: "when-chart-line", stroke: "var(--muted)", opacity: 0.35,
+        d: "M" + years.map(function (yy, i) { return sx(yy) + "," + sy(Y.scenarios[n].median_ft[i]); }).join("L") }, plot);
+    });
+    var dots = svg("g", {}, s);
+
+    function pick(n) {
+      var S = Y.scenarios[n];
+      names.forEach(function (k) {
+        lines[k].setAttribute("stroke", k === n ? "var(--teal)" : "var(--muted)");
+        lines[k].setAttribute("stroke-width", k === n ? 3.5 : 1.5);
+        lines[k].setAttribute("opacity", k === n ? 1 : 0.35);
+      });
+      band.setAttribute("d", "M" + years.map(function (yy, i) { return sx(yy) + "," + sy(S.p83_ft[i]); }).join("L") +
+        "L" + years.slice().reverse().map(function (yy, i) { return sx(yy) + "," + sy(S.p17_ft[years.length - 1 - i]); }).join("L") + "Z");
+      dots.innerHTML = "";
+      var reached = [];
+      for (var f = 1; f <= 9; f++) {
+        var y = S.crossing[f];
+        if (!y) continue;
+        reached.push(f);
+        var g = svg("g", { class: "dot-g", tabindex: 0, role: "button", "aria-label": "+" + f + " ft around " + y + ": show it in the comparison" }, dots);
+        svg("circle", { cx: sx(y), cy: sy(f), r: 7, fill: "var(--accent)", class: "dot" }, g);
+        svg("text", { x: sx(y) + 11, y: sy(f) - 7, class: "lbl" }, g).textContent = y;
+        (function (lv) {
+          g.addEventListener("click", function () { show(lv); });
+          g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); show(lv); } });
+        })(f);
+      }
+      var bits = reached.slice(0, 3).map(function (f) { return "<b>+" + f + " ft</b> around " + S.crossing[f]; });
+      var last = reached[reached.length - 1];
+      if (reached.length > 3) bits.push("up to <b>+" + last + " ft</b> around " + S.crossing[last]);
+      var missed = !reached.length ? "no level is reached by " + x1 + "."
+        : last < 9 ? " +" + (last + 1) + " ft is not reached by " + x1 + "." : "";
+      infoEl.innerHTML = "Under the <b>" + esc(n) + "</b> scenario: " + (bits.length ? bits.join(", ") + "." : "") + missed;
+      group.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.s === n)); });
+    }
+    names.forEach(function (n) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.id = "when-" + n.toLowerCase().replace(/[^a-z]+/g, "-");
+      b.dataset.s = n;
+      b.textContent = n;
+      b.addEventListener("click", function () { pick(n); });
+      group.append(b);
+    });
+    document.getElementById("when-note").innerHTML = 'Source: Sweet et al. 2022, NOAA Technical Report NOS 01, ' +
+      '<a href="' + Y.source + '">' + esc(Y.file) + "</a>, cell " + esc(Y.cell) +
+      ". Relative sea level, vertical land motion included, shifted by the file's own offsets (" + Y.offset_cm_1992_to_2005 +
+      " cm) to the 1983–2001 tidal epoch the flood layers are measured from. Years between the file's decades are interpolated, so read them as “around”.";
+    pick(Y.default);
+    section.hidden = false;
+  }).catch(function () {});
+
+  // ---- storms: HURDAT2 tracks within the radius, by year and closest approach ----
+  getJSON("figures/storms.json").then(function (D) {
+    var section = document.getElementById("storms"), chart = document.getElementById("storm-chart");
+    var infoEl = document.getElementById("storm-info");
+    var all = D.storms, hu = all.filter(function (s) { return /^[1-5]$/.test(s.category); });
+    document.getElementById("storms-note").innerHTML = "<b>" + all.length + "</b> storm tracks, from depressions to hurricanes, passed within " +
+      D.radius_km + " km of the city between " + D.first_year + " and " + D.last_year + "; <b>" + hu.length +
+      "</b> of them at hurricane strength while in range.";
+    var w = 1000, h = 320, m = { l: 56, r: 24, t: 24, b: 34 };
+    function sx(y) { return m.l + (y - D.first_year) / (D.last_year - D.first_year) * (w - m.l - m.r); }
+    function sy(km) { return m.t + km / D.radius_km * (h - m.t - m.b); }
+    var R = { TD: 3, TS: 4.5, other: 3, 1: 6.5, 2: 8, 3: 9.5, 4: 11, 5: 12.5 };
+    var FILL = { TD: "var(--today)", other: "var(--today)", TS: "var(--flood)" };
+    var s = svg("svg", { viewBox: "0 0 " + w + " " + h, role: "img", "aria-label": "Storms near St. Augustine by year and distance" }, chart);
+    [0, 25, 50, 75, 100].forEach(function (km) {
+      if (km > D.radius_km) return;
+      svg("line", { x1: m.l, x2: w - m.r, y1: sy(km), y2: sy(km), class: "grid" }, s);
+      svg("text", { x: m.l - 8, y: sy(km) + 4, "text-anchor": "end", class: "axis" }, s).textContent = km + " km";
+    });
+    for (var yr = 1860; yr <= D.last_year; yr += 20) {
+      svg("text", { x: sx(yr), y: h - 10, "text-anchor": "middle", class: "axis" }, s).textContent = yr;
+    }
+    var g = svg("g", {}, s), current = null;
+    function cat(st) { return /^[1-5]$/.test(st.category) ? "Category " + st.category + " hurricane" : st.category === "TS" ? "tropical storm" : st.category === "TD" ? "tropical depression" : "post- or sub-tropical system"; }
+    function pick(st, dot) {
+      if (current) current.classList.remove("on");
+      current = dot; dot.classList.add("on");
+      infoEl.innerHTML = "<b>" + esc(st.name === "Unnamed" ? "An unnamed storm" : st.name) + "</b>, " + st.date + ": passed " +
+        st.closest_km.toFixed(0) + " km from the city as a " + cat(st) + ", winds up to " + st.max_wind_kt + " kt (" +
+        Math.round(st.max_wind_kt * 1.15078) + " mph) while within " + D.radius_km + " km.";
+    }
+    function draw(list) {
+      g.innerHTML = "";
+      list.slice().sort(function (a, b) { return (R[a.category] || 3) - (R[b.category] || 3); }).reverse().forEach(function (st) {
+        var isHu = /^[1-5]$/.test(st.category);
+        var dot = svg("circle", {
+          cx: sx(st.year), cy: sy(st.closest_km), r: R[st.category] || 3, class: "dot", tabindex: 0, role: "button",
+          fill: isHu ? "var(--accent)" : FILL[st.category] || "var(--today)", "fill-opacity": isHu ? 0.55 + 0.1 * Number(st.category) : 0.8,
+          "aria-label": (st.name === "Unnamed" ? "Unnamed storm" : st.name) + ", " + st.year
+        }, g);
+        dot.addEventListener("click", function () { pick(st, dot); });
+        dot.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(st, dot); } });
+        if (isHu && Number(st.category) >= 2 && st.name !== "Unnamed") {
+          var right = sx(st.year) > w * 0.85;  // keep labels near the right edge inside the chart
+          svg("text", { x: sx(st.year) + (right ? -14 : 12), y: sy(st.closest_km) + 4, class: "lbl", "text-anchor": right ? "end" : "start" }, g)
+            .textContent = st.name + " " + st.year;
+        }
+      });
+    }
+    var bAll = document.getElementById("storm-all"), bHu = document.getElementById("storm-hu");
+    bAll.addEventListener("click", function () { draw(all); bAll.setAttribute("aria-pressed", "true"); bHu.setAttribute("aria-pressed", "false"); });
+    bHu.addEventListener("click", function () { draw(hu); bHu.setAttribute("aria-pressed", "true"); bAll.setAttribute("aria-pressed", "false"); });
+    draw(all);
+    section.hidden = false;
+  }).catch(function () {});
 })();
 </script>
 </body>

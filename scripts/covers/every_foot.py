@@ -4,7 +4,8 @@ Same pipeline functions, same self-checks and the same NOAA, Census and OSM inpu
 `make run`; only the level list is longer. The odd levels must match outputs/land_loss.csv
 exactly, so the page never shows two different numbers for one level.
 
-Outputs: outputs/covers/land_loss_every_foot.csv, outputs/covers/sites_every_foot.csv
+Outputs: outputs/covers/land_loss_every_foot.csv, outputs/covers/sites_every_foot.csv and
+outputs/covers/every_foot.gpkg (city, land and the flooded land per kind and level, for flood_map.py)
 
 Run from the repo root after `make run`: PYTHONPATH=src .venv/bin/python scripts/covers/every_foot.py
 """
@@ -45,4 +46,13 @@ for col in ("inundated_land_km2", "new_inundation_km2", "new_loss_pct_of_land"):
 OUT.mkdir(parents=True, exist_ok=True)
 pipeline.write_csv(table, OUT / "land_loss_every_foot.csv")
 pipeline.write_csv(risk.sort_values(["level_ft", "kind", "osm_type", "osm_id"]), OUT / "sites_every_foot.csv")
+gpkg = OUT / "every_foot.gpkg"
+gpkg.unlink(missing_ok=True)
+crs = cfg["area_crs"]
+gpd.GeoDataFrame(geometry=list(city.geometry), crs=crs).to_file(gpkg, layer="city")
+gpd.GeoDataFrame(geometry=[land], crs=crs).to_file(gpkg, layer="land")
+rows = [(kind, level, geom) for (kind, level), geom in sorted(flooded.items())]
+gpd.GeoDataFrame(
+    {"kind": [r[0] for r in rows], "level_ft": [r[1] for r in rows]}, geometry=[r[2] for r in rows], crs=crs
+).to_file(gpkg, layer="flooded")
 print(OUT / "land_loss_every_foot.csv")
