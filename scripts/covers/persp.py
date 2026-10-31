@@ -455,9 +455,26 @@ def make_split():
     b_path.unlink()
 
 
+# GIF timing (ms): start rising almost at once, keep each step short, hold longest on the worst case
+HOLD_FIRST, HOLD_STEP, HOLD_LAST, TWEEN, TWEENS = 600, 650, 2600, 60, 5
+
+
+def make_gif():
+    imgs = [Image.open(OUT / f"frame_{lv}ft.png").convert("RGB") for lv in LEVELS]
+    frames, durations = [], []
+    for i, im in enumerate(imgs):
+        frames.append(im)
+        durations.append(HOLD_FIRST if i == 0 else HOLD_LAST if i == len(imgs) - 1 else HOLD_STEP)
+        if i + 1 < len(imgs):
+            for k in range(1, TWEENS + 1):
+                frames.append(Image.blend(im, imgs[i + 1], k / (TWEENS + 1)))
+                durations.append(TWEEN)
+    frames[0].save(OUT / "rise.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True)
+
+
 if __name__ == "__main__":
-    if sys.argv[1:] == ["split"]:
-        make_split()
+    if sys.argv[1:] in (["split"], ["gif"]):
+        make_split() if sys.argv[1] == "split" else make_gif()
         raise SystemExit
     OUT.mkdir(parents=True, exist_ok=True)
     only = [int(a) for a in sys.argv[1:]] or LEVELS
@@ -468,17 +485,6 @@ if __name__ == "__main__":
         paths.append(p)
         print("frame", lv)
     if len(only) == len(LEVELS):
-        imgs = [Image.open(p).convert("RGB") for p in paths]
-        frames, durations = [], []
-        for i, im in enumerate(imgs):
-            frames.append(im)
-            durations.append(2200 if i in (0, len(imgs) - 1) else 1100)
-            if i + 1 < len(imgs):
-                for t in (0.25, 0.5, 0.75):
-                    frames.append(Image.blend(im, imgs[i + 1], t))
-                    durations.append(90)
-        frames[0].save(
-            OUT / "rise.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True
-        )
+        make_gif()
         make_split()
     print("done")
