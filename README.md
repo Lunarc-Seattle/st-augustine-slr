@@ -1,4 +1,4 @@
-<a href="https://lunarc-seattle.github.io/st-augustine-slr/"><img src="docs/figures/fig0_cover.png" alt="St. Augustine at 1, 5 and 9 ft of sea-level rise: 8.0%, 43.3% and 69.4% of city land newly inundated" width="100%"></a>
+<a href="https://lunarc-seattle.github.io/st-augustine-slr/"><img src="docs/figures/st-augustine-rise.gif" alt="Animated 2.5D view up the St. Augustine bayfront as the sea rises from today to 9 ft; landmarks turn red as they flood" width="100%"></a>
 
 # St. Augustine sea-level-rise scenarios
 
@@ -12,6 +12,8 @@ checks its own results.
 ![Python 3.14](https://img.shields.io/badge/python-3.14-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Project page](https://img.shields.io/badge/project-page-informational)](https://lunarc-seattle.github.io/st-augustine-slr/)
+
+<img src="docs/figures/st-augustine-poster.png" alt="Poster: share of city land newly under water at 1, 3, 5, 7 and 9 ft (8%, 22%, 43%, 62%, 69%) and the landmarks reached at +1 ft and +3 ft, beside a 2.5D view of the old town at +5 ft" width="100%">
 
 > Years ago I studied sea-level rise in St. Augustine for my landscape
 > architecture portfolio. The maps were drawn by hand, and the numbers could
@@ -83,6 +85,17 @@ flowchart LR
 > the land area matches Census `ALAND` to within 0.14%.
 
 ## Figures
+
+**Cover graphics.** The animation, the poster and the plan below are
+illustrative renders made outside the pipeline. They use the same NOAA,
+Census and OSM layers, plus OSM building footprints (frozen with their
+Overpass query) and one public-domain Library of Congress photo by Carol M.
+Highsmith. Building heights come from `building:levels` (untagged = one
+storey) and are exaggerated, with the water, five times in the 2.5D views.
+The percentages are read from `outputs/land_loss.csv`.
+
+<img src="docs/figures/st-augustine-plan.png" alt="Plan of St. Augustine with land newly flooded at +5 ft in aqua and seven coastal landmarks in red, beside a toned photo of Matanzas Bay from the Castillo" width="100%">
+
 
 All figures are A4 landscape, 300-dpi PNG plus vector PDF. On the
 [project page](https://lunarc-seattle.github.io/st-augustine-slr/) you can
