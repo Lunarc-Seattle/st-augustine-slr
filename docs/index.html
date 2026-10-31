@@ -149,8 +149,19 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   position: relative; aspect-ratio: 12 / 7; overflow: hidden; user-select: none;
   background: #ffffff; border: 1px solid var(--rule); border-radius: 3px;
 }
+.cmp .layer { position: absolute; inset: 0; }
+.cmp .before-layer { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
 .cmp img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; }
-.cmp .before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+/* captions live inside each layer, so dragging reveals the one for the side you are looking at */
+.cmp .cap {
+  position: absolute; bottom: 4%; display: grid; gap: 0.15rem; max-width: 46%;
+  font-family: var(--font-body); color: #33393f; pointer-events: none;
+}
+.cmp .cap b { font: 700 clamp(1.4rem, 4.2vw, 3rem)/1 var(--font-display); }
+.cmp .cap span { font-size: clamp(0.75rem, 1.6vw, 1rem); }
+.cmp .cap-before { left: 3.5%; }
+.cmp .cap-after { right: 3.5%; text-align: right; }
+.cmp .cap-after b { color: #0f6e7a; }
 .cmp .blade {
   position: absolute; top: 0; bottom: 0; left: var(--pos); width: 4px; margin-left: -2px;
   background: #ffffff; box-shadow: 0 0 10px rgba(20, 40, 45, 0.45); pointer-events: none;
@@ -190,14 +201,20 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     </div>
     <div class="levels" role="group" aria-label="Sea-level rise shown on the right"></div>
     <div class="cmp" id="cmp">
-      <img class="after" src="figures/compare/7ft.jpg" alt="The old town at +7 ft: aqua water between white buildings, landmarks in red" draggable="false">
-      <img class="before" src="figures/compare/today.jpg" alt="The old town today, in grey" draggable="false">
+      <div class="layer after-layer">
+        <img class="after" src="figures/compare/7ft.jpg" alt="The old town at +7 ft: aqua water between white buildings, landmarks in red" draggable="false">
+        <div class="cap cap-after"><b id="cmp-cap-ft">+7 ft</b><span id="cmp-cap-pct">61.8% of the city's land newly under water</span></div>
+      </div>
+      <div class="layer before-layer">
+        <img class="before" src="figures/compare/today.jpg" alt="The old town today, in grey" draggable="false">
+        <div class="cap cap-before"><b>Today</b><span>old town at mean higher high water</span></div>
+      </div>
       <span class="tag tag-before">TODAY</span>
       <span class="tag tag-after" id="cmp-tag">+7 FT</span>
       <div class="blade"><span class="knob"><svg width="22" height="14" viewBox="0 0 22 14" aria-hidden="true"><path d="M0 7 7 1v12zM22 7l-7 6V1z" fill="#33393f"/></svg></span></div>
       <input type="range" min="0" max="100" step="0.5" value="50" id="cmp-range" aria-label="Divider position: left of it is today, right of it is the chosen sea-level rise">
     </div>
-    <p class="cmp-stat" aria-live="polite"><b id="cmp-pct">61.8%</b> of the city's land newly under water at <span id="cmp-ft">+7 ft</span></p>
+    <p class="cmp-stat" id="cmp-stat" aria-live="polite"></p>
   </section>
 
   <section class="gauge" aria-labelledby="gauge-title">
@@ -374,20 +391,36 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   var range = document.getElementById("cmp-range");
   var after = box.querySelector(".after");
   var tag = document.getElementById("cmp-tag");
-  var pctOut = document.getElementById("cmp-pct");
-  var ftOut = document.getElementById("cmp-ft");
   var group = document.querySelector(".levels");
 
-  function move() { box.style.setProperty("--pos", range.value + "%"); }
+  var stat = document.getElementById("cmp-stat");
+  var capFt = document.getElementById("cmp-cap-ft");
+  var capPct = document.getElementById("cmp-cap-pct");
+  var current = null, todayKm2 = null;
+
+  function describe() {
+    // more of the frame is today -> describe today; more is flooded -> describe the chosen level
+    if (Number(range.value) >= 50 || !current) {
+      stat.innerHTML = "<b>Today</b> at mean higher high water" +
+        (todayKm2 == null ? "" : ", " + todayKm2.toFixed(2) + " km² of city land, mostly tidal marsh, is already under water");
+    } else {
+      var p = current.pct == null ? "" : current.pct.toFixed(1) + "%";
+      stat.innerHTML = "<b>" + p + "</b> of the city's land newly under water at +" + current.ft + " ft";
+    }
+  }
+
+  function move() { box.style.setProperty("--pos", range.value + "%"); describe(); }
   range.addEventListener("input", move);
-  move();
+  box.style.setProperty("--pos", range.value + "%");
 
   function show(level) {
     after.src = "figures/compare/" + level.ft + "ft.jpg";
     after.alt = "The old town at +" + level.ft + " ft: aqua water between white buildings, landmarks in red";
+    current = level;
     tag.textContent = "+" + level.ft + " FT";
-    ftOut.textContent = "+" + level.ft + " ft";
-    if (level.pct != null) pctOut.textContent = level.pct.toFixed(1) + "%";
+    capFt.textContent = "+" + level.ft + " ft";
+    capPct.textContent = level.pct == null ? "" : level.pct.toFixed(1) + "% of the city's land newly under water";
+    describe();
     group.querySelectorAll("button").forEach(function (b) {
       b.setAttribute("aria-pressed", String(Number(b.dataset.ft) === level.ft));
     });
@@ -411,7 +444,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   // numbers come from levels.json (written from outputs/land_loss.csv by make covers)
   fetch("figures/compare/levels.json")
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (data) { build(data.levels); })
+    .then(function (data) { todayKm2 = data.today_km2; build(data.levels); })
     .catch(function () { build([1, 3, 5, 7, 9].map(function (ft) { return { ft: ft, pct: null }; })); });
 })();
 </script>

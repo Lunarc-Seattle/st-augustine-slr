@@ -326,6 +326,9 @@ def view_limits():
     return mx - w / 2, mx + w / 2, my - h / 2, my + h / 2
 
 
+PEARL_SHOW_LEVEL = True  # "floods at +N ft" under each name; off for the compare stills
+
+
 def draw_pearls(ax, rows, level):
     pearl_lib.draw(
         ax,
@@ -338,6 +341,7 @@ def draw_pearls(ax, rows, level):
         string=False,
         pin=lambda x, y: project(x, y, 0),
         label_bg=0.85,
+        show_level=PEARL_SHOW_LEVEL,
     )
 
 
@@ -480,8 +484,10 @@ def make_compare(scale=2):
     """
     import json
 
+    global PEARL_SHOW_LEVEL
     out = OUT.parent / "compare"
     out.mkdir(parents=True, exist_ok=True)
+    PEARL_SHOW_LEVEL = False  # the page says which level each half shows
     for lv in LEVELS:
         tmp = out / "_tmp.png"
         fig = render(lv, with_text=False)
@@ -495,8 +501,11 @@ def make_compare(scale=2):
         else:
             im.save(out / f"{lv}ft.jpg", quality=86, optimize=True, progressive=True)
         print("compare", lv)
+    PEARL_SHOW_LEVEL = True
     levels = [{"ft": lv, "pct": round(float(pct[lv]), 1)} for lv in LEVELS if lv > 0]
-    (out / "levels.json").write_text(json.dumps({"levels": levels, "source": "outputs/land_loss.csv"}, indent=2))
+    today_km2 = float(table[(table["kind"] == "total") & (table["level_ft"] == 0)]["inundated_land_km2"].iloc[0])
+    data = {"today_km2": round(today_km2, 2), "levels": levels, "source": "outputs/land_loss.csv"}
+    (out / "levels.json").write_text(json.dumps(data, indent=2))
 
 
 if __name__ == "__main__":

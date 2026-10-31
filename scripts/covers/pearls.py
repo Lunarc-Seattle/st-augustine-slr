@@ -150,6 +150,7 @@ def draw(
     label_bg=0.8,
     pin=None,
     icons=False,
+    show_level=True,
 ):
     """Draw the string, the pearls and their labels.
 
@@ -233,7 +234,7 @@ def draw(
         ax.annotate(
             row["label"],
             xy=(px, py),
-            xytext=(dx, dy + 5),
+            xytext=(dx, dy + 5 if show_level else dy),
             textcoords="offset points",
             ha=ha,
             va="center",
@@ -244,6 +245,8 @@ def draw(
             zorder=z + 5,
             bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=label_bg),
         )
+        if not show_level:  # names only, e.g. when the image itself stands for one level
+            continue
         ax.annotate(
             when,
             xy=(px, py),
