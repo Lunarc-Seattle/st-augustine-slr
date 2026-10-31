@@ -10,7 +10,7 @@ endif
 VENV := .venv
 PY := $(VENV)/$(BIN)/python
 
-.PHONY: venv data run test lint format docs fixture clean
+.PHONY: venv data run test lint format docs covers fixture clean
 
 venv: $(VENV)/.installed
 
@@ -47,6 +47,18 @@ format: venv
 docs:
 	cp outputs/fig*.png docs/figures/
 	cp outputs/fig[1-3]_*.pdf docs/pdf/
+
+## Cover graphics (README and profile): plan + 2.5D frames, GIF, poster; needs `make run` first.
+## Uses OSM building footprints and a LOC photo frozen in data/frozen/.
+covers: venv
+	$(PY) scripts/covers/build_layers.py
+	$(PY) scripts/covers/plan.py
+	$(PY) scripts/covers/persp.py
+	$(PY) scripts/covers/plan_photo.py
+	$(PY) scripts/covers/poster.py
+	cp outputs/covers/persp/rise.gif docs/figures/st-augustine-rise.gif
+	cp outputs/covers/persp/split_7ft.png docs/figures/st-augustine-today-vs-7ft.png
+	cp outputs/covers/st-augustine-poster.png outputs/covers/st-augustine-plan.png docs/figures/
 
 ## Rebuild the test fixture and regression baseline (only on intended changes).
 fixture: venv

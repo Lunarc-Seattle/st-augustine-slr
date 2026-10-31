@@ -87,12 +87,16 @@ flowchart LR
 ## Figures
 
 **Cover graphics.** The animation, the poster and the plan below are
-illustrative renders made outside the pipeline. They use the same NOAA,
-Census and OSM layers, plus OSM building footprints (frozen with their
-Overpass query) and one public-domain Library of Congress photo by Carol M.
+illustrative renders, rebuilt with `make covers` (after `make run`) from
+`scripts/covers/`. They use the same NOAA, Census and OSM layers, plus two
+inputs frozen in `data/frozen/`: OSM building footprints with their Overpass
+query and time, and one public-domain Library of Congress photo by Carol M.
 Highsmith. Building heights come from `building:levels` (untagged = one
 storey) and are exaggerated, with the water, five times in the 2.5D views.
-The percentages are read from `outputs/land_loss.csv`.
+Percentages and flood levels are read from `outputs/land_loss.csv` and
+`outputs/sites_at_risk.csv`.
+
+<img src="docs/figures/st-augustine-today-vs-7ft.png" alt="Old town today in grey beside the same streets at +7 ft in aqua, split by a slider line; 61.8% of city land newly under water" width="100%">
 
 <img src="docs/figures/st-augustine-plan.png" alt="Plan of St. Augustine with land newly flooded at +5 ft in aqua and seven coastal landmarks in red, beside a toned photo of Matanzas Bay from the Castillo" width="100%">
 
@@ -125,6 +129,7 @@ make run    # analysis, self-checks, CSVs, figures and manifest -> outputs/
 make test   # offline tests on a small fixture, with coverage (a few seconds)
 make lint   # ruff lint and format check, as in CI
 make docs   # copy the figures into docs/ for the README and project page
+make covers # cover GIF, poster and plan graphic (scripts/covers/, data/frozen/)
 ```
 
 The Makefile works on Linux, macOS and Windows (Git Bash with GNU make).
