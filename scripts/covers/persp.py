@@ -480,7 +480,8 @@ def make_compare(scale=2):
     """Full-frame stills for the drag-to-compare slider on the project page.
 
     All stills keep full colour, so today reads as the same place, just drier; the aqua flood
-    carries the contrast. Pearls show each image's own level. levels.json carries the headline numbers from land_loss.csv.
+    carries the contrast. Pearls show each image's own level. levels.json carries the headline
+    numbers from land_loss.csv.
     """
     import json
 
