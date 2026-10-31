@@ -472,9 +472,36 @@ def make_gif():
     frames[0].save(OUT / "rise.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True)
 
 
+def make_compare(scale=2):
+    """Full-frame stills for the drag-to-compare slider on the project page.
+
+    today.jpg is drained of colour like the split still; <ft>ft.jpg keep theirs. Pearls show
+    each image's own level. levels.json carries the headline numbers from land_loss.csv.
+    """
+    import json
+
+    out = OUT.parent / "compare"
+    out.mkdir(parents=True, exist_ok=True)
+    for lv in LEVELS:
+        tmp = out / "_tmp.png"
+        fig = render(lv, with_text=False)
+        fig.savefig(tmp, dpi=100 * scale, facecolor=C["paper"])
+        plt.close(fig)
+        im = Image.open(tmp).convert("RGB")
+        tmp.unlink()
+        if lv == 0:
+            im = ImageEnhance.Brightness(ImageEnhance.Color(im).enhance(0.18)).enhance(1.04)
+            im.save(out / "today.jpg", quality=86, optimize=True, progressive=True)
+        else:
+            im.save(out / f"{lv}ft.jpg", quality=86, optimize=True, progressive=True)
+        print("compare", lv)
+    levels = [{"ft": lv, "pct": round(float(pct[lv]), 1)} for lv in LEVELS if lv > 0]
+    (out / "levels.json").write_text(json.dumps({"levels": levels, "source": "outputs/land_loss.csv"}, indent=2))
+
+
 if __name__ == "__main__":
-    if sys.argv[1:] in (["split"], ["gif"]):
-        make_split() if sys.argv[1] == "split" else make_gif()
+    if sys.argv[1:] in (["split"], ["gif"], ["compare"]):
+        {"split": make_split, "gif": make_gif, "compare": make_compare}[sys.argv[1]]()
         raise SystemExit
     OUT.mkdir(parents=True, exist_ok=True)
     only = [int(a) for a in sys.argv[1:]] or LEVELS
@@ -487,4 +514,5 @@ if __name__ == "__main__":
     if len(only) == len(LEVELS):
         make_gif()
         make_split()
+        make_compare()
     print("done")

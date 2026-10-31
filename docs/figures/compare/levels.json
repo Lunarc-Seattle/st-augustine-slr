@@ -1,0 +1,25 @@
+{
+  "levels": [
+    {
+      "ft": 1,
+      "pct": 8.0
+    },
+    {
+      "ft": 3,
+      "pct": 21.5
+    },
+    {
+      "ft": 5,
+      "pct": 43.3
+    },
+    {
+      "ft": 7,
+      "pct": 61.8
+    },
+    {
+      "ft": 9,
+      "pct": 69.4
+    }
+  ],
+  "source": "outputs/land_loss.csv"
+}

@@ -58,6 +58,7 @@ covers: venv
 	$(PY) scripts/covers/poster.py
 	cp outputs/covers/persp/rise.gif docs/figures/st-augustine-rise.gif
 	cp outputs/covers/persp/split_7ft.png docs/figures/st-augustine-today-vs-7ft.png
+	mkdir -p docs/figures/compare && cp outputs/covers/compare/* docs/figures/compare/
 	cp outputs/covers/st-augustine-poster.png outputs/covers/st-augustine-plan.png docs/figures/
 
 ## Rebuild the test fixture and regression baseline (only on intended changes).

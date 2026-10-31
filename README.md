@@ -96,7 +96,9 @@ storey) and are exaggerated, with the water, five times in the 2.5D views.
 Percentages and flood levels are read from `outputs/land_loss.csv` and
 `outputs/sites_at_risk.csv`.
 
-<img src="docs/figures/st-augustine-today-vs-7ft.png" alt="Old town today in grey beside the same streets at +7 ft in aqua, split by a slider line; 61.8% of city land newly under water" width="100%">
+<a href="https://lunarc-seattle.github.io/st-augustine-slr/#compare-title"><img src="docs/figures/st-augustine-today-vs-7ft.png" alt="Old town today in grey beside the same streets at +7 ft in aqua, split by a slider line; 61.8% of city land newly under water" width="100%"></a>
+
+**[Drag to compare today with +1 to +9 ft on the project page →](https://lunarc-seattle.github.io/st-augustine-slr/#compare-title)**
 
 <img src="docs/figures/st-augustine-plan.png" alt="Plan of St. Augustine with land newly flooded at +5 ft in aqua and seven coastal landmarks in red, beside a toned photo of Matanzas Bay from the Castillo" width="100%">
 

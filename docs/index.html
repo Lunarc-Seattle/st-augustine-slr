@@ -19,6 +19,7 @@
   --today: #a9a8a2;    /* already inundated at 0 ft */
   --track: #e8ecec;
   --focus: #2a78d6;
+  --accent: #e4472b;   /* landmarks and the compare handle, same vermilion as the covers */
   --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -26,13 +27,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0f1417; --surface: #161d21; --ink: #e7ecee; --muted: #9aa5ab; --rule: #2a3439;
-    --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0;
+    --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0; --accent: #f0664c;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0f1417; --surface: #161d21; --ink: #e7ecee; --muted: #9aa5ab; --rule: #2a3439;
-  --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0;
+  --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0; --accent: #f0664c;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -135,6 +136,42 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 @media (prefers-reduced-motion: no-preference) {
   .seg-slr, .seg-low { transition: width 0.6s ease; }
 }
+
+/* Drag to compare: today (left, desaturated) against a chosen level (right). The range input
+   covers the image, so mouse, touch and arrow keys all move the divider. */
+.compare { display: grid; gap: 0.9rem; }
+.compare-head { display: grid; gap: 0.4rem; }
+.levels { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.levels button { font-family: var(--font-mono); border-radius: 999px; padding: 0.45rem 0.85rem; }
+.levels button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+.cmp {
+  --pos: 50%;
+  position: relative; aspect-ratio: 12 / 7; overflow: hidden; user-select: none;
+  background: #ffffff; border: 1px solid var(--rule); border-radius: 3px;
+}
+.cmp img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; }
+.cmp .before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.cmp .blade {
+  position: absolute; top: 0; bottom: 0; left: var(--pos); width: 4px; margin-left: -2px;
+  background: #ffffff; box-shadow: 0 0 10px rgba(20, 40, 45, 0.45); pointer-events: none;
+}
+.cmp .knob {
+  position: absolute; top: 50%; left: 50%; width: 46px; height: 46px; transform: translate(-50%, -50%);
+  border-radius: 50%; background: #ffffff; border: 2.5px solid var(--accent);
+  display: grid; place-items: center; box-shadow: 0 2px 10px rgba(20, 40, 45, 0.3);
+}
+.cmp .tag {
+  position: absolute; top: 12px; font: 600 0.75rem/1 var(--font-mono); letter-spacing: 0.08em;
+  color: #ffffff; padding: 0.45rem 0.6rem; border-radius: 4px; pointer-events: none;
+}
+.cmp .tag-before { left: 12px; background: #33393f; }
+.cmp .tag-after { right: 12px; background: var(--accent); }
+.cmp input[type="range"] {
+  position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize;
+}
+.cmp:has(input:focus-visible) .knob { outline: 3px solid var(--focus); outline-offset: 3px; }
+.cmp-stat { font-size: 1.05rem; }
+.cmp-stat b { font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
@@ -145,6 +182,23 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     <p class="lede">At 3 ft of sea-level rise, a fifth of the city's land floods beyond today's high-tide line, and the water reaches the Castillo de San Marcos and the Plaza de la Constitución.</p>
     <p class="meta">A reproducible pipeline built from NOAA, U.S. Census and OpenStreetMap data. Source code: <a href="https://github.com/Lunarc-Seattle/st-augustine-slr">github.com/Lunarc-Seattle/st-augustine-slr</a></p>
   </header>
+
+  <section class="compare" aria-labelledby="compare-title">
+    <div class="compare-head">
+      <h2 id="compare-title">Drag to compare</h2>
+      <p class="note">The old town today, in grey, against the same streets after sea-level rise. Drag the handle, or focus it and use the arrow keys. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
+    </div>
+    <div class="levels" role="group" aria-label="Sea-level rise shown on the right"></div>
+    <div class="cmp" id="cmp">
+      <img class="after" src="figures/compare/7ft.jpg" alt="The old town at +7 ft: aqua water between white buildings, landmarks in red" draggable="false">
+      <img class="before" src="figures/compare/today.jpg" alt="The old town today, in grey" draggable="false">
+      <span class="tag tag-before">TODAY</span>
+      <span class="tag tag-after" id="cmp-tag">+7 FT</span>
+      <div class="blade"><span class="knob"><svg width="22" height="14" viewBox="0 0 22 14" aria-hidden="true"><path d="M0 7 7 1v12zM22 7l-7 6V1z" fill="#33393f"/></svg></span></div>
+      <input type="range" min="0" max="100" step="0.5" value="50" id="cmp-range" aria-label="Divider position: left of it is today, right of it is the chosen sea-level rise">
+    </div>
+    <p class="cmp-stat" aria-live="polite"><b id="cmp-pct">61.8%</b> of the city's land newly under water at <span id="cmp-ft">+7 ft</span></p>
+  </section>
 
   <section class="gauge" aria-labelledby="gauge-title">
     <div class="gauge-head">
@@ -311,6 +365,54 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
         .catch(function () { status.textContent = "This PDF could not be loaded. The image above is the same figure."; plate.querySelector(".sheet").hidden = false; });
     });
   });
+})();
+</script>
+<script>
+(function () {
+  var box = document.getElementById("cmp");
+  if (!box) return;
+  var range = document.getElementById("cmp-range");
+  var after = box.querySelector(".after");
+  var tag = document.getElementById("cmp-tag");
+  var pctOut = document.getElementById("cmp-pct");
+  var ftOut = document.getElementById("cmp-ft");
+  var group = document.querySelector(".levels");
+
+  function move() { box.style.setProperty("--pos", range.value + "%"); }
+  range.addEventListener("input", move);
+  move();
+
+  function show(level) {
+    after.src = "figures/compare/" + level.ft + "ft.jpg";
+    after.alt = "The old town at +" + level.ft + " ft: aqua water between white buildings, landmarks in red";
+    tag.textContent = "+" + level.ft + " FT";
+    ftOut.textContent = "+" + level.ft + " ft";
+    if (level.pct != null) pctOut.textContent = level.pct.toFixed(1) + "%";
+    group.querySelectorAll("button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(Number(b.dataset.ft) === level.ft));
+    });
+  }
+
+  function build(levels) {
+    levels.forEach(function (level) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.id = "cmp-level-" + level.ft;
+      b.dataset.ft = level.ft;
+      b.textContent = "+" + level.ft + " ft";
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", function () { show(level); });
+      b.addEventListener("pointerenter", function () { new Image().src = "figures/compare/" + level.ft + "ft.jpg"; });
+      group.append(b);
+    });
+    show(levels.filter(function (l) { return l.ft === 7; })[0] || levels[levels.length - 1]);
+  }
+
+  // numbers come from levels.json (written from outputs/land_loss.csv by make covers)
+  fetch("figures/compare/levels.json")
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) { build(data.levels); })
+    .catch(function () { build([1, 3, 5, 7, 9].map(function (ft) { return { ft: ft, pct: null }; })); });
 })();
 </script>
 </body>
