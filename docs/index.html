@@ -5,35 +5,42 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Sea-level-rise scenarios for St. Augustine, Florida: land loss at 1-9 ft, historic sites and parks at risk, and zoomable vector PDF figures.">
 <title>St. Augustine Under Rising Water</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: one reading column; a tide-gauge table up top, then each figure as a plate with its vector PDF beneath. */
+/* Palette follows the cover graphics: cream land, teal sea, aqua flood, vermilion landmarks.
+   The gauge keeps the figures' blue and orange so it reads with Figures 1 and 2. */
 :root {
-  --bg: #f6f7f5;
-  --surface: #ffffff;
-  --ink: #13181c;
-  --muted: #5d666c;
-  --rule: #dfe3e2;
+  --bg: #f5f1e8;       /* land on the covers */
+  --surface: #fffcf6;
+  --ink: #2b3136;
+  --muted: #6a6f6c;
+  --rule: #e2d9c8;
+  --teal: #0f6e7a;     /* headline teal of the covers */
+  --flood: #18a7b5;    /* new flood water on the covers */
   --slr: #2a78d6;      /* ocean-connected, same blue as the figures */
   --low: #eb6834;      /* low-lying unconnected, same orange as the figures */
   --today: #a9a8a2;    /* already inundated at 0 ft */
-  --track: #e8ecec;
-  --focus: #2a78d6;
+  --track: #ebe4d6;
+  --focus: #0f6e7a;
   --accent: #e4472b;   /* landmarks and the compare handle, same vermilion as the covers */
-  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --shadow: 0 1px 2px rgba(60, 50, 30, 0.06), 0 8px 28px rgba(60, 50, 30, 0.08);
+  --font-display: "Libre Baskerville", Baskerville, Georgia, serif;
   --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1417; --surface: #161d21; --ink: #e7ecee; --muted: #9aa5ab; --rule: #2a3439;
-    --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0; --accent: #f0664c;
+    --bg: #121819; --surface: #1a2224; --ink: #ece7dc; --muted: #a2a9a6; --rule: #2c3639;
+    --teal: #5cc6d1; --flood: #3cc3cf; --slr: #5b9cf0; --low: #f08257; --today: #7d7c77;
+    --track: #253033; --focus: #5cc6d1; --accent: #f0664c; --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f1417; --surface: #161d21; --ink: #e7ecee; --muted: #9aa5ab; --rule: #2a3439;
-  --slr: #5b9cf0; --low: #f08257; --today: #7d7c77; --track: #232c31; --focus: #5b9cf0; --accent: #f0664c;
+  --bg: #121819; --surface: #1a2224; --ink: #ece7dc; --muted: #a2a9a6; --rule: #2c3639;
+  --teal: #5cc6d1; --flood: #3cc3cf; --slr: #5b9cf0; --low: #f08257; --today: #7d7c77;
+  --track: #253033; --focus: #5cc6d1; --accent: #f0664c; --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -52,19 +59,25 @@ body {
   padding-block: 2.5rem 3rem;
   display: grid; gap: 3rem;
 }
-h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
-h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; letter-spacing: -0.01em; }
-h2 { font-size: 1.6rem; font-weight: 600; }
-h3 { font-size: 1.15rem; font-weight: 600; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; font-weight: 400; }
+h1 { font-size: clamp(2.2rem, 6vw, 4rem); letter-spacing: -0.015em; line-height: 1.05; }
+h1 em, h2 em { font-style: italic; color: var(--teal); }
+h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h3 { font-size: 1.15rem; }
 p { margin: 0; max-width: 65ch; }
 .eyebrow {
-  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em;
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--muted);
 }
-header { display: grid; gap: 1rem; }
-.lede { font-size: 1.15rem; color: var(--ink); }
+/* section numbers, as on a portfolio board */
+.num { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--accent); }
+header { display: grid; gap: 1.1rem; padding-top: 1rem; }
+header .eyebrow { color: var(--accent); }
+.lede { font-size: 1.2rem; color: var(--ink); max-width: 52ch; }
 .meta { color: var(--muted); font-size: 0.9rem; }
-a { color: var(--slr); }
+/* a hand-drawn tide line under the title */
+.tide { display: block; width: min(22rem, 70%); height: 14px; color: var(--flood); }
+a { color: var(--teal); }
 a:focus-visible, button:focus-visible, a.button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* Tide gauge: each row is a level, the bar is newly inundated share of city land on a 0-100% scale. */
@@ -73,7 +86,7 @@ a:focus-visible, button:focus-visible, a.button:focus-visible { outline: 2px sol
 .rows { display: grid; gap: 0.55rem; font-variant-numeric: tabular-nums; }
 .row { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) 4rem; gap: 0.75rem; align-items: center; }
 .lvl { font-family: var(--font-mono); font-size: 0.95rem; text-align: right; }
-.track { height: 1.4rem; background: var(--track); border-radius: 2px; display: flex; overflow: hidden; }
+.track { height: 1.4rem; background: var(--track); border-radius: 999px; display: flex; overflow: hidden; }
 .seg-slr { background: var(--slr); }
 .seg-low { background: var(--low); }
 .pct { font-family: var(--font-mono); font-weight: 500; }
@@ -87,8 +100,8 @@ a:focus-visible, button:focus-visible, a.button:focus-visible { outline: 2px sol
 .note { font-size: 0.9rem; color: var(--muted); }
 
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; }
-.fact { border-top: 2px solid var(--ink); padding-top: 0.6rem; display: grid; gap: 0.25rem; min-width: 0; }
-.fact b { font-family: var(--font-display); font-size: 1.9rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fact { border-top: 1px solid var(--ink); padding-top: 0.8rem; display: grid; gap: 0.3rem; min-width: 0; }
+.fact b { font-family: var(--font-display); font-size: 2.2rem; font-weight: 400; color: var(--teal); font-variant-numeric: tabular-nums; }
 .fact span { font-size: 0.9rem; color: var(--muted); }
 
 /* Figure plates */
@@ -98,19 +111,19 @@ a:focus-visible, button:focus-visible, a.button:focus-visible { outline: 2px sol
 .plate-head > div { min-width: 0; display: grid; gap: 0.2rem; }
 .sheet {
   background: #ffffff;  /* the figures are printed on white in both themes */
-  border: 1px solid var(--rule); border-radius: 3px; overflow: hidden;
+  border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; box-shadow: var(--shadow);
 }
 .sheet img { display: block; width: 100%; height: auto; }
 .caption { font-size: 0.95rem; color: var(--muted); }
 .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 button {
   font: 500 0.9rem/1 var(--font-body); color: var(--ink); background: var(--surface);
-  border: 1px solid var(--rule); border-radius: 3px; padding: 0.6rem 0.9rem; cursor: pointer;
+  border: 1px solid var(--rule); border-radius: 999px; padding: 0.6rem 1rem; cursor: pointer;
 }
 button:hover, a.button:hover { border-color: var(--muted); }
 a.button {
   font: 500 0.9rem/1 var(--font-body); color: var(--ink); background: var(--surface);
-  border: 1px solid var(--rule); border-radius: 3px; padding: 0.6rem 0.9rem; text-decoration: none;
+  border: 1px solid var(--rule); border-radius: 999px; padding: 0.6rem 1rem; text-decoration: none;
 }
 button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 button[disabled] { opacity: 0.5; cursor: default; }
@@ -132,22 +145,28 @@ footer { border-top: 1px solid var(--rule); padding-top: 1rem; font-size: 0.85re
 code { font-family: var(--font-mono); font-size: 0.9em; }
 @media (max-width: 480px) {
   .row, .scale { grid-template-columns: 2.8rem minmax(0, 1fr) 3.4rem; gap: 0.5rem; }
+  .levels button { padding: 0.5rem 0.62rem; font-size: 0.82rem; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .seg-slr, .seg-low { transition: width 0.6s ease; }
 }
 
-/* Drag to compare: today (left, desaturated) against a chosen level (right). The range input
+/* Drag to compare: today (left) against a chosen level (right). The range input
    covers the image, so mouse, touch and arrow keys all move the divider. */
-.compare { display: grid; gap: 0.9rem; }
-.compare-head { display: grid; gap: 0.4rem; }
-.levels { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.levels button { font-family: var(--font-mono); border-radius: 999px; padding: 0.45rem 0.85rem; }
-.levels button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+.compare { display: grid; gap: 1rem; }
+.compare-head { display: grid; gap: 0.5rem; }
+/* level picker drawn as a tide staff: one track, the chosen mark filled vermilion */
+.levels {
+  display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; justify-self: start;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 999px;
+}
+.levels button { font-family: var(--font-mono); border: 0; background: transparent; padding: 0.5rem 0.95rem; }
+.levels button:hover { background: var(--track); }
+.levels button[aria-pressed="true"] { background: var(--accent); color: #ffffff; }
 .cmp {
   --pos: 50%;
   position: relative; aspect-ratio: 12 / 7; overflow: hidden; user-select: none;
-  background: #ffffff; border: 1px solid var(--rule); border-radius: 3px;
+  background: #ffffff; border: 1px solid var(--rule); border-radius: 8px; box-shadow: var(--shadow);
 }
 .cmp .layer { position: absolute; inset: 0; }
 .cmp .before-layer { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
@@ -181,23 +200,25 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize;
 }
 .cmp:has(input:focus-visible) .knob { outline: 3px solid var(--focus); outline-offset: 3px; }
-.cmp-stat { font-size: 1.05rem; }
-.cmp-stat b { font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.cmp-stat { font-family: var(--font-display); font-size: 1.1rem; line-height: 1.7; min-height: 3.6em; }
+.cmp-stat b { font-size: 1.7rem; font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <span class="eyebrow">St. Augustine, Florida · NOAA SLR scenarios above MHHW</span>
-    <h1>St. Augustine under rising water</h1>
+    <h1>St. Augustine <em>under rising water</em></h1>
+    <svg class="tide" viewBox="0 0 352 14" preserveAspectRatio="none" aria-hidden="true"><path d="M1 8c22-9 44-9 66 0s44 9 66 0 44-9 66 0 44 9 66 0 44-9 66 0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
     <p class="lede">At 3 ft of sea-level rise, a fifth of the city's land floods beyond today's high-tide line, and the water reaches the Castillo de San Marcos and the Plaza de la Constitución.</p>
     <p class="meta">A reproducible pipeline built from NOAA, U.S. Census and OpenStreetMap data. Source code: <a href="https://github.com/Lunarc-Seattle/st-augustine-slr">github.com/Lunarc-Seattle/st-augustine-slr</a></p>
   </header>
 
   <section class="compare" aria-labelledby="compare-title">
     <div class="compare-head">
-      <h2 id="compare-title">Drag to compare</h2>
-      <p class="note">The old town today, in grey, against the same streets after sea-level rise. Drag the handle, or focus it and use the arrow keys. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
+      <span class="num">01 · Compare</span>
+      <h2 id="compare-title">Drag <em>today</em> against the rising sea</h2>
+      <p class="note">The old town today against the same streets after sea-level rise. Drag the handle, or focus it and use the arrow keys. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
     </div>
     <div class="levels" role="group" aria-label="Sea-level rise shown on the right"></div>
     <div class="cmp" id="cmp">
@@ -206,7 +227,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
         <div class="cap cap-after"><b id="cmp-cap-ft">+7 ft</b><span id="cmp-cap-pct">61.8% of the city's land newly under water</span></div>
       </div>
       <div class="layer before-layer">
-        <img class="before" src="figures/compare/today.jpg" alt="The old town today, in grey" draggable="false">
+        <img class="before" src="figures/compare/today.jpg" alt="The old town today, dry streets between white buildings" draggable="false">
         <div class="cap cap-before"><b>Today</b><span>old town at mean higher high water</span></div>
       </div>
       <span class="tag tag-before">TODAY</span>
@@ -219,7 +240,8 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 
   <section class="gauge" aria-labelledby="gauge-title">
     <div class="gauge-head">
-      <h2 id="gauge-title">New inundation by sea-level rise</h2>
+      <span class="num">02 · Land</span>
+      <h2 id="gauge-title">New inundation by <em>sea-level rise</em></h2>
       <p class="note">Share of the city's 24.63 km² of land that floods at each level, not counting the 5.68 km² (mostly tidal marsh) already below today's mean higher high water.</p>
     </div>
     <div class="rows" role="table" aria-label="Newly inundated share of city land by sea-level rise">
@@ -242,7 +264,11 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     <div class="fact"><b>0.14%</b><span>gap between computed city land and the Census <code>ALAND</code> figure</span></div>
   </section>
 
-  <section class="plates" aria-label="Figures">
+  <section class="plates" aria-labelledby="plates-title">
+    <div class="compare-head">
+      <span class="num">03 · Figures</span>
+      <h2 id="plates-title">Maps and charts, <em>in vector</em></h2>
+    </div>
     <article class="plate" data-pdf="pdf/fig1_inundation_small_multiples.pdf">
       <div class="plate-head">
         <div><span class="eyebrow">Figure 1 · A4 landscape · vector PDF 11.9 MB</span><h3>Inundation at 1, 3, 5, 7 and 9 ft</h3></div>

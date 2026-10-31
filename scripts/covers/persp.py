@@ -479,8 +479,8 @@ def make_gif():
 def make_compare(scale=2):
     """Full-frame stills for the drag-to-compare slider on the project page.
 
-    today.jpg is drained of colour like the split still; <ft>ft.jpg keep theirs. Pearls show
-    each image's own level. levels.json carries the headline numbers from land_loss.csv.
+    All stills keep full colour, so today reads as the same place, just drier; the aqua flood
+    carries the contrast. Pearls show each image's own level. levels.json carries the headline numbers from land_loss.csv.
     """
     import json
 
@@ -495,11 +495,7 @@ def make_compare(scale=2):
         plt.close(fig)
         im = Image.open(tmp).convert("RGB")
         tmp.unlink()
-        if lv == 0:
-            im = ImageEnhance.Brightness(ImageEnhance.Color(im).enhance(0.18)).enhance(1.04)
-            im.save(out / "today.jpg", quality=86, optimize=True, progressive=True)
-        else:
-            im.save(out / f"{lv}ft.jpg", quality=86, optimize=True, progressive=True)
+        im.save(out / ("today.jpg" if lv == 0 else f"{lv}ft.jpg"), quality=86, optimize=True, progressive=True)
         print("compare", lv)
     PEARL_SHOW_LEVEL = True
     levels = [{"ft": lv, "pct": round(float(pct[lv]), 1)} for lv in LEVELS if lv > 0]
