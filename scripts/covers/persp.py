@@ -504,7 +504,11 @@ def make_compare(scale=2):
     PEARL_SHOW_LEVEL = True
     levels = [{"ft": lv, "pct": round(float(pct[lv]), 1)} for lv in LEVELS if lv > 0]
     today_km2 = float(table[(table["kind"] == "total") & (table["level_ft"] == 0)]["inundated_land_km2"].iloc[0])
-    data = {"today_km2": round(today_km2, 2), "levels": levels, "source": "outputs/land_loss.csv"}
+    # content hash of the stills: the page appends it to image URLs so browsers never show a stale level
+    import hashlib
+
+    digest = hashlib.sha256(b"".join(f.read_bytes() for f in sorted(out.glob("*.jpg")))).hexdigest()[:10]
+    data = {"version": digest, "today_km2": round(today_km2, 2), "levels": levels, "source": "outputs/land_loss.csv"}
     (out / "levels.json").write_text(json.dumps(data, indent=2))
 
 

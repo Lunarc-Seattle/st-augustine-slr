@@ -396,17 +396,25 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   var stat = document.getElementById("cmp-stat");
   var capFt = document.getElementById("cmp-cap-ft");
   var capPct = document.getElementById("cmp-cap-pct");
-  var current = null, todayKm2 = null;
+  var current = null, todayKm2 = null, version = "";
+  function src(name) { return "figures/compare/" + name + (version ? "?v=" + version : ""); }
+
+  function todayText() {
+    return "<b>Today</b> at mean higher high water" +
+      (todayKm2 == null ? "" : ", " + todayKm2.toFixed(2) + " km² of city land, mostly tidal marsh, is already under water");
+  }
+
+  function levelText() {
+    var p = current.pct == null ? "" : current.pct.toFixed(1) + "%";
+    return "<b>" + p + "</b> of the city's land newly under water at +" + current.ft + " ft";
+  }
 
   function describe() {
-    // more of the frame is today -> describe today; more is flooded -> describe the chosen level
-    if (Number(range.value) >= 50 || !current) {
-      stat.innerHTML = "<b>Today</b> at mean higher high water" +
-        (todayKm2 == null ? "" : ", " + todayKm2.toFixed(2) + " km² of city land, mostly tidal marsh, is already under water");
-    } else {
-      var p = current.pct == null ? "" : current.pct.toFixed(1) + "%";
-      stat.innerHTML = "<b>" + p + "</b> of the city's land newly under water at +" + current.ft + " ft";
-    }
+    // the side that fills more of the frame is described; near the middle, both are
+    var pos = Number(range.value);
+    if (!current || pos > 60) stat.innerHTML = todayText();
+    else if (pos < 40) stat.innerHTML = levelText();
+    else stat.innerHTML = todayText() + "<br>" + levelText();
   }
 
   function move() { box.style.setProperty("--pos", range.value + "%"); describe(); }
@@ -414,7 +422,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   box.style.setProperty("--pos", range.value + "%");
 
   function show(level) {
-    after.src = "figures/compare/" + level.ft + "ft.jpg";
+    after.src = src(level.ft + "ft.jpg");
     after.alt = "The old town at +" + level.ft + " ft: aqua water between white buildings, landmarks in red";
     current = level;
     tag.textContent = "+" + level.ft + " FT";
@@ -435,16 +443,21 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
       b.textContent = "+" + level.ft + " ft";
       b.setAttribute("aria-pressed", "false");
       b.addEventListener("click", function () { show(level); });
-      b.addEventListener("pointerenter", function () { new Image().src = "figures/compare/" + level.ft + "ft.jpg"; });
+      b.addEventListener("pointerenter", function () { new Image().src = src(level.ft + "ft.jpg"); });
       group.append(b);
     });
     show(levels.filter(function (l) { return l.ft === 7; })[0] || levels[levels.length - 1]);
   }
 
   // numbers come from levels.json (written from outputs/land_loss.csv by make covers)
-  fetch("figures/compare/levels.json")
+  fetch("figures/compare/levels.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (data) { todayKm2 = data.today_km2; build(data.levels); })
+    .then(function (data) {
+      todayKm2 = data.today_km2;
+      version = data.version || "";
+      box.querySelector(".before").src = src("today.jpg");
+      build(data.levels);
+    })
     .catch(function () { build([1, 3, 5, 7, 9].map(function (ft) { return { ft: ft, pct: null }; })); });
 })();
 </script>
