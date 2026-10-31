@@ -28,10 +28,10 @@ SITES = {
 ACCENT, PAPER, BROWN, RING, TEXT = "#E4472B", "#FFFFFF", "#8E6A4B", "#B08D6E", "#3B3F45"
 
 
-def load(crs):
+def load(crs, risk_csv="outputs/sites_at_risk.csv"):
     """GeoDataFrame of the pearls with x, y (in crs), label, icon and first flood level."""
     sites = gpd.read_file("data/cache/osm/osm_sites.geojson").to_crs(crs)
-    risk = pd.read_csv("outputs/sites_at_risk.csv")
+    risk = pd.read_csv(risk_csv)
     first = risk.groupby(["osm_type", "osm_id"])["level_ft"].min()
     rows = []
     for name, (label, icon) in SITES.items():

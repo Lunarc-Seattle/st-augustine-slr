@@ -52,6 +52,7 @@ docs:
 ## Uses OSM building footprints and a LOC photo frozen in data/frozen/.
 covers: venv
 	$(PY) scripts/covers/build_layers.py
+	$(PY) scripts/covers/every_foot.py
 	$(PY) scripts/covers/plan.py
 	$(PY) scripts/covers/persp.py
 	$(PY) scripts/covers/plan_photo.py

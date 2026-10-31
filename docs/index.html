@@ -143,6 +143,57 @@ button[disabled] { opacity: 0.5; cursor: default; }
 .details ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
 footer { border-top: 1px solid var(--rule); padding-top: 1rem; font-size: 0.85rem; color: var(--muted); display: grid; gap: 0.4rem; }
 code { font-family: var(--font-mono); font-size: 0.9em; }
+/* gauge rows open that level in the comparison above */
+.row { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
+.row:hover { background: var(--track); }
+.row.on .lvl button { color: var(--accent); font-weight: 600; }
+.row.on .track { box-shadow: 0 0 0 2px var(--accent); }
+.lvl button {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; border-radius: 3px; cursor: pointer;
+  text-decoration: underline dotted var(--muted); text-underline-offset: 3px;
+}
+
+/* Scroll story: the frame stays put while the steps scroll past and raise the water */
+.story { display: grid; gap: 1rem; }
+.story-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(15rem, 1fr); gap: 2rem; align-items: start; }
+.story-fig { position: sticky; top: 1.5rem; margin: 0; }
+.story-frame {
+  position: relative; aspect-ratio: 12 / 7; overflow: hidden; background: #ffffff;
+  border: 1px solid var(--rule); border-radius: 8px; box-shadow: var(--shadow);
+}
+.story-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+/* tide staff in the frame: fills from 0 to 9 ft */
+.staff {
+  position: absolute; right: 16px; top: 12%; bottom: 12%; width: 8px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85); box-shadow: 0 0 0 1px rgba(51, 57, 63, 0.18);
+}
+.staff i { position: absolute; left: 0; right: 0; bottom: 0; height: 0; border-radius: 999px; background: #18a7b5; }
+.staff b {
+  position: absolute; right: 14px; transform: translateY(50%); bottom: 0; white-space: nowrap;
+  font: 600 0.78rem/1 var(--font-mono); color: #ffffff; background: #0f6e7a; padding: 0.3rem 0.45rem; border-radius: 4px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .staff i, .staff b { transition: height 0.6s ease, bottom 0.6s ease; }
+  .step { transition: opacity 0.3s ease, border-color 0.3s ease; }
+}
+.steps { list-style: none; margin: 0; padding: 12vh 0 40vh; display: grid; gap: 45vh; }
+.step {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 1.1rem 1.2rem;
+  display: grid; gap: 0.35rem; opacity: 0.4;
+}
+.step.on { opacity: 1; border-color: var(--accent); }
+.step .lv { font: 400 2.2rem/1 var(--font-display); color: var(--teal); }
+.step .big { font-family: var(--font-display); font-size: 1.05rem; }
+.step .big b { font-size: 1.5rem; font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
+.step .reach { font-size: 0.92rem; color: var(--muted); }
+.step .reach em { font-family: var(--font-display); color: var(--ink); }
+@media (max-width: 760px) {
+  .story-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .story-fig { top: 0; z-index: 2; background: var(--bg); padding-block: 0.5rem; }
+  .steps { padding: 8vh 0 30vh; gap: 60vh; }
+  .step { background: color-mix(in srgb, var(--surface) 94%, transparent); }
+}
+
 @media (max-width: 480px) {
   .row, .scale { grid-template-columns: 2.8rem minmax(0, 1fr) 3.4rem; gap: 0.5rem; }
   .levels button { padding: 0.5rem 0.62rem; font-size: 0.82rem; }
@@ -163,6 +214,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .levels button { font-family: var(--font-mono); border: 0; background: transparent; padding: 0.5rem 0.95rem; }
 .levels button:hover { background: var(--track); }
 .levels button[aria-pressed="true"] { background: var(--accent); color: #ffffff; }
+.levels .unit { align-self: center; padding: 0 0.75rem 0 0.25rem; font: 0.85rem/1 var(--font-mono); color: var(--muted); }
 .cmp {
   --pos: 50%;
   position: relative; aspect-ratio: 12 / 7; overflow: hidden; user-select: none;
@@ -200,6 +252,20 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize;
 }
 .cmp:has(input:focus-visible) .knob { outline: 3px solid var(--focus); outline-offset: 3px; }
+/* stacked stills that cross-fade when the level changes */
+.stills { position: absolute; inset: 0; }
+.stills img { opacity: 0; }
+.stills img.on { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .stills img { transition: opacity 0.45s ease; }
+}
+.cmp-bar { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+.play {
+  display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono);
+  background: var(--ink); color: var(--bg); border-color: var(--ink);
+}
+.play:hover { border-color: var(--ink); opacity: 0.88; }
+.play svg { width: 0.8rem; height: 0.8rem; fill: currentColor; }
 .cmp-stat { font-family: var(--font-display); font-size: 1.1rem; line-height: 1.7; min-height: 3.6em; }
 .cmp-stat b { font-size: 1.7rem; font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
 </style>
@@ -218,12 +284,15 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     <div class="compare-head">
       <span class="num">01 · Compare</span>
       <h2 id="compare-title">Drag <em>today</em> against the rising sea</h2>
-      <p class="note">The old town today against the same streets after sea-level rise. Drag the handle, or focus it and use the arrow keys. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
+      <p class="note">The old town today against the same streets after sea-level rise. Drag the handle (or focus it and use the arrow keys), pick a level, or press play to watch the water rise a foot at a time. 2.5D view up the bayfront from the south; heights and water exaggerated five times.</p>
     </div>
-    <div class="levels" role="group" aria-label="Sea-level rise shown on the right"></div>
+    <div class="cmp-bar">
+      <button type="button" class="play" id="cmp-play" aria-pressed="false"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0l9 5-9 5z"/></svg><span>Play 1–9 ft</span></button>
+      <div class="levels" role="group" aria-label="Sea-level rise shown on the right"></div>
+    </div>
     <div class="cmp" id="cmp">
       <div class="layer after-layer">
-        <img class="after" src="figures/compare/7ft.jpg" alt="The old town at +7 ft: aqua water between white buildings, landmarks in red" draggable="false">
+        <div class="stills" id="cmp-stills"><img class="on" src="figures/compare/7ft.jpg" alt="The old town at +7 ft: aqua water between white buildings, landmarks in red" draggable="false"></div>
         <div class="cap cap-after"><b id="cmp-cap-ft">+7 ft</b><span id="cmp-cap-pct">61.8% of the city's land newly under water</span></div>
       </div>
       <div class="layer before-layer">
@@ -238,11 +307,28 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     <p class="cmp-stat" id="cmp-stat" aria-live="polite"></p>
   </section>
 
+  <section class="story" aria-labelledby="story-title" id="story" hidden>
+    <div class="compare-head">
+      <span class="num">02 · Rising</span>
+      <h2 id="story-title">Scroll to <em>raise the water</em></h2>
+      <p class="note">The same view, one step at a time. Each card lifts the sea to its level; the share of land and the landmarks come from the same tables as the rest of the page.</p>
+    </div>
+    <div class="story-grid">
+      <figure class="story-fig">
+        <div class="story-frame">
+          <div class="stills" id="story-stills"></div>
+          <div class="staff" aria-hidden="true"><i id="story-fill"></i><b id="story-mark">0 ft</b></div>
+        </div>
+      </figure>
+      <ol class="steps" id="story-steps"></ol>
+    </div>
+  </section>
+
   <section class="gauge" aria-labelledby="gauge-title">
     <div class="gauge-head">
-      <span class="num">02 · Land</span>
+      <span class="num">03 · Land</span>
       <h2 id="gauge-title">New inundation by <em>sea-level rise</em></h2>
-      <p class="note">Share of the city's 24.63 km² of land that floods at each level, not counting the 5.68 km² (mostly tidal marsh) already below today's mean higher high water.</p>
+      <p class="note">Share of the city's 24.63 km² of land that floods at each level, not counting the 5.68 km² (mostly tidal marsh) already below today's mean higher high water. Click a level to see it in the comparison.</p>
     </div>
     <div class="rows" role="table" aria-label="Newly inundated share of city land by sea-level rise">
       <div class="row" role="row"><span class="lvl" role="rowheader">1 ft</span><div class="track" role="cell" aria-label="7.4% ocean-connected, 0.5% low-lying"><span class="seg-slr" style="width:7.43%"></span><span class="seg-low" style="width:0.55%"></span></div><span class="pct" role="cell">8.0%</span></div>
@@ -266,7 +352,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 
   <section class="plates" aria-labelledby="plates-title">
     <div class="compare-head">
-      <span class="num">03 · Figures</span>
+      <span class="num">04 · Figures</span>
       <h2 id="plates-title">Maps and charts, <em>in vector</em></h2>
     </div>
     <article class="plate" data-pdf="pdf/fig1_inundation_small_multiples.pdf">
@@ -415,16 +501,48 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   var box = document.getElementById("cmp");
   if (!box) return;
   var range = document.getElementById("cmp-range");
-  var after = box.querySelector(".after");
+  var stills = document.getElementById("cmp-stills");
   var tag = document.getElementById("cmp-tag");
   var group = document.querySelector(".levels");
-
   var stat = document.getElementById("cmp-stat");
   var capFt = document.getElementById("cmp-cap-ft");
   var capPct = document.getElementById("cmp-cap-pct");
-  var current = null, todayKm2 = null, version = "";
-  function src(name) { return "figures/compare/" + name + (version ? "?v=" + version : ""); }
+  var playBtn = document.getElementById("cmp-play");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var levels = [], landmarks = [], current = null, todayKm2 = null, version = "";
 
+  function src(name) { return "figures/compare/" + name + (version ? "?v=" + version : ""); }
+  function file(ft) { return src(ft === 0 ? "today.jpg" : ft + "ft.jpg"); }
+  function byFt(ft) { return levels.filter(function (l) { return l.ft === ft; })[0]; }
+  function esc(t) { var d = document.createElement("span"); d.textContent = t; return d.innerHTML; }
+  function altFor(ft) {
+    return ft === 0 ? "The old town today, dry streets between white buildings"
+      : "The old town at +" + ft + " ft: aqua water between white buildings, landmarks in red";
+  }
+
+  // swap a still: the new image fades in over the old one once it has loaded
+  function fadeTo(holder, url, alt) {
+    holder.dataset.want = url;
+    var on = holder.querySelector("img.on:last-child");
+    if (on && on.dataset.url === url) return;
+    var img = new Image();
+    img.alt = alt;
+    img.draggable = false;
+    img.dataset.url = url;
+    img.onload = function () {
+      if (holder.dataset.want !== url) return;  // a newer level was asked for meanwhile
+      holder.append(img);
+      img.getBoundingClientRect();  // commit opacity 0 so the fade runs
+      img.classList.add("on");
+      setTimeout(function () {
+        if (holder.dataset.want !== url) return;
+        holder.querySelectorAll("img").forEach(function (o) { if (o !== img) o.remove(); });
+      }, reduce ? 0 : 500);
+    };
+    img.src = url;
+  }
+
+  // ---- drag to compare ----
   function todayText() {
     return "<b>Today</b> at mean higher high water" +
       (todayKm2 == null ? "" : ", " + todayKm2.toFixed(2) + " km² of city land, mostly tidal marsh, is already under water");
@@ -447,9 +565,10 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
   range.addEventListener("input", move);
   box.style.setProperty("--pos", range.value + "%");
 
+  var rows = Array.prototype.slice.call(document.querySelectorAll(".gauge .row"));
+
   function show(level) {
-    after.src = src(level.ft + "ft.jpg");
-    after.alt = "The old town at +" + level.ft + " ft: aqua water between white buildings, landmarks in red";
+    fadeTo(stills, file(level.ft), altFor(level.ft));
     current = level;
     tag.textContent = "+" + level.ft + " FT";
     capFt.textContent = "+" + level.ft + " ft";
@@ -458,33 +577,172 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
     group.querySelectorAll("button").forEach(function (b) {
       b.setAttribute("aria-pressed", String(Number(b.dataset.ft) === level.ft));
     });
+    rows.forEach(function (r) { r.classList.toggle("on", Number(r.dataset.ft) === level.ft); });
   }
 
-  function build(levels) {
+  // ---- play: the water rises a foot at a time on the right of the divider ----
+  var timer = null;
+  var playIcon = playBtn.querySelector("path"), playLabel = playBtn.querySelector("span");
+  var PLAY = "M1 0l9 5-9 5z", PAUSE = "M1 0h3v10H1zM6 0h3v10H6z";
+
+  function idle(label) {
+    clearTimeout(timer);
+    timer = null;
+    playBtn.setAttribute("aria-pressed", "false");
+    playIcon.setAttribute("d", PLAY);
+    playLabel.textContent = label || "Play 1–9 ft";
+  }
+
+  function slideTo(target) {
+    // move the divider so the flooded side fills most of the frame
+    var from = Number(range.value);
+    if (reduce) { range.value = target; move(); return; }
+    var t0 = Date.now();
+    (function frame() {
+      var k = Math.min(1, (Date.now() - t0) / 500), e = 1 - Math.pow(1 - k, 3);
+      range.value = from + (target - from) * e;
+      move();
+      if (k < 1) setTimeout(frame, 16);
+    })();
+  }
+
+  function play() {
+    if (!levels.length) return;
+    levels.forEach(function (l) { new Image().src = file(l.ft); });
+    if (Number(range.value) > 30) slideTo(18);
+    playBtn.setAttribute("aria-pressed", "true");
+    playIcon.setAttribute("d", PAUSE);
+    playLabel.textContent = "Pause";
+    var i = 0;
+    (function tick() {
+      show(levels[i]);
+      i += 1;
+      if (i < levels.length) timer = setTimeout(tick, 1100);
+      else idle("Replay 1–9 ft");
+    })();
+  }
+
+  playBtn.addEventListener("click", function () { if (timer) idle(); else play(); });
+
+  function build() {
     levels.forEach(function (level) {
       var b = document.createElement("button");
       b.type = "button";
       b.id = "cmp-level-" + level.ft;
       b.dataset.ft = level.ft;
-      b.textContent = "+" + level.ft + " ft";
+      b.textContent = "+" + level.ft + (levels.length > 6 ? "" : " ft");
+      b.setAttribute("aria-label", "+" + level.ft + " ft");
       b.setAttribute("aria-pressed", "false");
-      b.addEventListener("click", function () { show(level); });
-      b.addEventListener("pointerenter", function () { new Image().src = src(level.ft + "ft.jpg"); });
+      b.addEventListener("click", function () { idle(); show(level); });
+      b.addEventListener("pointerenter", function () { new Image().src = file(level.ft); });
       group.append(b);
     });
-    show(levels.filter(function (l) { return l.ft === 7; })[0] || levels[levels.length - 1]);
+    if (levels.length > 6) {
+      var unit = document.createElement("span");
+      unit.className = "unit";
+      unit.textContent = "ft";
+      group.append(unit);
+    }
+    show(byFt(7) || levels[levels.length - 1]);
   }
 
-  // numbers come from levels.json (written from outputs/land_loss.csv by make covers)
+  // ---- the gauge rows open their level in the comparison ----
+  rows.forEach(function (row) {
+    var cell = row.querySelector(".lvl");
+    var ft = parseInt(cell.textContent, 10);
+    row.dataset.ft = ft;
+    var b = document.createElement("button");
+    b.type = "button";
+    b.id = "gauge-level-" + ft;
+    b.textContent = cell.textContent;
+    b.setAttribute("aria-label", "Show +" + ft + " ft in the comparison");
+    cell.textContent = "";
+    cell.append(b);
+    row.addEventListener("click", function () {
+      var level = byFt(ft);
+      if (!level) return;
+      idle();
+      show(level);
+      box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    });
+  });
+
+  // ---- scroll story: each card raises the water on the pinned frame ----
+  function buildStory() {
+    var section = document.getElementById("story");
+    var list = document.getElementById("story-steps");
+    var holder = document.getElementById("story-stills");
+    var fill = document.getElementById("story-fill");
+    var mark = document.getElementById("story-mark");
+    if (!("IntersectionObserver" in window) || !levels.length) return;
+    var top = levels[levels.length - 1].ft;
+    var steps = [0].concat(levels.filter(function (l) { return l.ft % 2 === 1; }).map(function (l) { return l.ft; }));
+    var prev = -1;
+
+    function names(list) {
+      return list.map(function (m) {
+        var from = m.floods_at;
+        return "<em>" + esc(m.name) + "</em>" + (from != null && from < m.shownAt ? " (from +" + from + " ft)" : "");
+      }).join(", ");
+    }
+
+    steps.forEach(function (ft, i) {
+      var reached = landmarks.filter(function (m) { return m.floods_at != null && m.floods_at > prev && m.floods_at <= ft; })
+        .map(function (m) { return { name: m.name, floods_at: m.floods_at, shownAt: ft }; });
+      prev = ft;
+      var li = document.createElement("li");
+      li.className = "step";
+      li.dataset.ft = ft;
+      var lv = ft === 0 ? "Today" : "+" + ft + " ft";
+      var big = ft === 0
+        ? "<b>" + (todayKm2 == null ? "" : todayKm2.toFixed(2) + " km²") + "</b> of city land, mostly tidal marsh, already under water at mean higher high water"
+        : "<b>" + byFt(ft).pct.toFixed(1) + "%</b> of the city's land newly under water";
+      var reach = reached.length ? "Water reaches " + names(reached)
+        : ft === 0 ? "None of the landmarks in view is wet yet." : "No new landmark in view is reached.";
+      if (i === steps.length - 1) {
+        var dry = landmarks.filter(function (m) { return m.floods_at == null; });
+        if (dry.length) reach += ". Still dry at +" + ft + " ft: " + dry.map(function (m) { return "<em>" + esc(m.name) + "</em>"; }).join(", ");
+      }
+      li.innerHTML = '<span class="lv">' + lv + '</span><span class="big">' + big + '</span><span class="reach">' + reach + "</span>";
+      list.append(li);
+    });
+
+    function activate(ft) {
+      list.querySelectorAll(".step").forEach(function (li) { li.classList.toggle("on", Number(li.dataset.ft) === ft); });
+      fadeTo(holder, file(ft), altFor(ft));
+      var h = (ft / top) * 100 + "%";
+      fill.style.height = h;
+      mark.style.bottom = h;
+      mark.textContent = ft === 0 ? "Today" : "+" + ft + " ft";
+      var next = steps[steps.indexOf(ft) + 1];
+      if (next != null) new Image().src = file(next);
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) activate(Number(e.target.dataset.ft)); });
+    }, { rootMargin: "-45% 0px -45% 0px" });
+    list.querySelectorAll(".step").forEach(function (li) { io.observe(li); });
+    section.hidden = false;
+    activate(0);
+  }
+
+  // numbers come from levels.json (written by make covers from scripts/covers/every_foot.py,
+  // whose odd levels equal outputs/land_loss.csv)
   fetch("figures/compare/levels.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (data) {
       todayKm2 = data.today_km2;
       version = data.version || "";
+      levels = data.levels;
+      landmarks = data.landmarks || [];
       box.querySelector(".before").src = src("today.jpg");
-      build(data.levels);
+      build();
+      buildStory();
     })
-    .catch(function () { build([1, 3, 5, 7, 9].map(function (ft) { return { ft: ft, pct: null }; })); });
+    .catch(function () {
+      levels = [1, 3, 5, 7, 9].map(function (ft) { return { ft: ft, pct: null }; });
+      build();
+    });
 })();
 </script>
 </body>

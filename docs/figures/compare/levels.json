@@ -1,5 +1,5 @@
 {
-  "version": "744be3164d",
+  "version": "0099a34aae",
   "today_km2": 5.68,
   "levels": [
     {
@@ -7,21 +7,55 @@
       "pct": 8.0
     },
     {
+      "ft": 2,
+      "pct": 13.0
+    },
+    {
       "ft": 3,
       "pct": 21.5
+    },
+    {
+      "ft": 4,
+      "pct": 32.5
     },
     {
       "ft": 5,
       "pct": 43.3
     },
     {
+      "ft": 6,
+      "pct": 54.3
+    },
+    {
       "ft": 7,
       "pct": 61.8
+    },
+    {
+      "ft": 8,
+      "pct": 66.2
     },
     {
       "ft": 9,
       "pct": 69.4
     }
   ],
-  "source": "outputs/land_loss.csv"
+  "landmarks": [
+    {
+      "name": "Ponce de Le\u00f3n landing, 1513",
+      "floods_at": 3
+    },
+    {
+      "name": "Castillo de San Marcos",
+      "floods_at": 2
+    },
+    {
+      "name": "Plaza de la Constituci\u00f3n",
+      "floods_at": 3
+    },
+    {
+      "name": "Lincolnville Historic District",
+      "floods_at": 2
+    }
+  ],
+  "source": "outputs/covers/land_loss_every_foot.csv"
 }

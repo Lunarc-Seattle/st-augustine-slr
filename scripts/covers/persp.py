@@ -36,6 +36,8 @@ import pearls as pearl_lib
 L = Path("data/cache/covers/layers_wide.gpkg")
 OUT = Path("outputs/covers/persp")
 LEVELS = [0, 1, 3, 5, 7, 9]
+COMPARE_LEVELS = list(range(10))  # the page's player steps every foot (scripts/covers/every_foot.py)
+EVERY_FOOT = Path("outputs/covers")
 SPLIT_LEVEL = 7
 W, H = 1200, 700
 WINDOW = (468900, 3305900, 470650, 3308700)  # old town; the south and east cuts open onto the Matanzas
@@ -139,7 +141,7 @@ def layer(name):
 
 land, water, marsh = layer("land"), layer("water"), layer("marsh")
 city_full = gpd.read_file(L, layer="city").geometry.iloc[0]
-new = {lv: layer(f"new_{lv}").simplify(2) for lv in LEVELS if lv > 0}
+new = {lv: layer(f"new_{lv}").simplify(2) for lv in COMPARE_LEVELS if lv > 0}
 parks = gpd.read_file(L, layer="parks")
 parks = parks[parks.geom_type.isin(["Polygon", "MultiPolygon"])].clip(window).geometry.union_all()
 
@@ -152,7 +154,7 @@ bldg = bldg.sort_values("depth", ascending=False)  # far first
 PEARLS = pearl_lib.load(26917)
 PEARLS = PEARLS[
     [window.buffer(-60).contains(gpd.points_from_xy([x], [y])[0]) for x, y in zip(PEARLS.x, PEARLS.y, strict=False)]
-]
+].copy()
 HL_FILL, HL_LINE = pearl_lib.highlight_areas(PEARLS)
 HL_FILL_G = gpd.GeoSeries(HL_FILL, crs=26917).union_all()
 HL_IDX = set(bldg.index[bldg.intersects(HL_FILL_G)])  # landmark buildings, drawn in the accent
@@ -480,16 +482,22 @@ def make_compare(scale=2):
     """Full-frame stills for the drag-to-compare slider on the project page.
 
     All stills keep full colour, so today reads as the same place, just drier; the aqua flood
-    carries the contrast. Pearls show each image's own level. levels.json carries the headline
-    numbers from land_loss.csv.
+    carries the contrast. Every foot from 0 to 9 is rendered for the page's player, with numbers
+    and first-flood levels from scripts/covers/every_foot.py (odd levels equal land_loss.csv).
+    levels.json carries the headline numbers.
     """
     import json
 
     global PEARL_SHOW_LEVEL
     out = OUT.parent / "compare"
     out.mkdir(parents=True, exist_ok=True)
+    every = pd.read_csv(EVERY_FOOT / "land_loss_every_foot.csv")
+    pct_every = every[every["kind"] == "total"].set_index("level_ft")["new_loss_pct_of_land"]
+    first = pearl_lib.load(26917, EVERY_FOOT / "sites_every_foot.csv").set_index("name")["floods_at"]
+    saved = PEARLS["floods_at"].copy()
+    PEARLS["floods_at"] = [first[n] for n in PEARLS["name"]]
     PEARL_SHOW_LEVEL = False  # the page says which level each half shows
-    for lv in LEVELS:
+    for lv in COMPARE_LEVELS:
         tmp = out / "_tmp.png"
         fig = render(lv, with_text=False)
         fig.savefig(tmp, dpi=100 * scale, facecolor=C["paper"])
@@ -499,13 +507,24 @@ def make_compare(scale=2):
         im.save(out / ("today.jpg" if lv == 0 else f"{lv}ft.jpg"), quality=86, optimize=True, progressive=True)
         print("compare", lv)
     PEARL_SHOW_LEVEL = True
-    levels = [{"ft": lv, "pct": round(float(pct[lv]), 1)} for lv in LEVELS if lv > 0]
+    PEARLS["floods_at"] = saved
+    landmarks = [
+        {"name": r["label"], "floods_at": None if pd.isna(f) else int(f)}
+        for (_, r), f in zip(PEARLS.iterrows(), [first[n] for n in PEARLS["name"]], strict=True)
+    ]
+    levels = [{"ft": lv, "pct": round(float(pct_every[lv]), 1)} for lv in COMPARE_LEVELS if lv > 0]
     today_km2 = float(table[(table["kind"] == "total") & (table["level_ft"] == 0)]["inundated_land_km2"].iloc[0])
     # content hash of the stills: the page appends it to image URLs so browsers never show a stale level
     import hashlib
 
     digest = hashlib.sha256(b"".join(f.read_bytes() for f in sorted(out.glob("*.jpg")))).hexdigest()[:10]
-    data = {"version": digest, "today_km2": round(today_km2, 2), "levels": levels, "source": "outputs/land_loss.csv"}
+    data = {
+        "version": digest,
+        "today_km2": round(today_km2, 2),
+        "levels": levels,
+        "landmarks": landmarks,
+        "source": "outputs/covers/land_loss_every_foot.csv",
+    }
     (out / "levels.json").write_text(json.dumps(data, indent=2))
 
 
