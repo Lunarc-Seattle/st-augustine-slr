@@ -10,7 +10,7 @@ endif
 VENV := .venv
 PY := $(VENV)/$(BIN)/python
 
-.PHONY: venv data run test lint format docs covers fixture clean
+.PHONY: venv data run test lint format docs covers videos fixture clean
 
 venv: $(VENV)/.installed
 
@@ -67,6 +67,12 @@ covers: venv
 	cp outputs/covers/persp/split_7ft.png docs/figures/st-augustine-today-vs-7ft.png
 	mkdir -p docs/figures/compare && cp outputs/covers/compare/* docs/figures/compare/
 	cp outputs/covers/st-augustine-poster.png outputs/covers/st-augustine-plan.png docs/figures/
+
+## The two 20 s MP4s in docs/media/ (after make covers). Needs ffmpeg with libx264 (set FFMPEG
+## if it is not on PATH) and Playwright with Chrome; neither is a project dependency.
+videos: venv
+	$(PY) scripts/covers/video_rise.py
+	python3 scripts/covers/video_web.py
 
 ## Rebuild the test fixture and regression baseline (only on intended changes).
 fixture: venv

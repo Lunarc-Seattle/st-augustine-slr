@@ -15,6 +15,9 @@ checks its own results.
 
 <img src="docs/figures/st-augustine-poster.png" alt="Poster: share of city land newly under water at 1, 3, 5, 7 and 9 ft (8%, 22%, 43%, 62%, 69%) and the landmarks reached at +1 ft and +3 ft, beside a 2.5D view of the old town at +5 ft" width="100%">
 
+**▶ 20-second videos:** [the sea rising, 0 to 9 ft](docs/media/st-augustine-rise.mp4) ·
+[the project page in use](docs/media/st-augustine-web.mp4) (1080p MP4, no audio)
+
 **[Explore it on the interactive project page →](https://lunarc-seattle.github.io/st-augustine-slr/)** Drag today against
 any level from 1 to 9 ft, step through the rise, cut a section through the
 town, tap any spot to see when it floods, guess before you look, see when NOAA's
@@ -155,6 +158,7 @@ make test   # offline tests on a small fixture, with coverage (a few seconds)
 make lint   # ruff lint and format check, as in CI
 make docs   # copy the figures into docs/ for the README and project page
 make covers # cover GIF, poster, plan and the project page's data (scripts/covers/)
+make videos # the two 20 s MP4s in docs/media/ (needs ffmpeg and Playwright)
 ```
 
 The Makefile works on Linux, macOS and Windows (Git Bash with GNU make).
