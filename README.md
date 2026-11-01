@@ -15,6 +15,11 @@ checks its own results.
 
 <img src="docs/figures/st-augustine-poster.png" alt="Poster: share of city land newly under water at 1, 3, 5, 7 and 9 ft (8%, 22%, 43%, 62%, 69%) and the landmarks reached at +1 ft and +3 ft, beside a 2.5D view of the old town at +5 ft" width="100%">
 
+**[Explore it on the interactive project page →](https://lunarc-seattle.github.io/st-augustine-slr/)** Drag today against
+any level from 1 to 9 ft, step through the rise, cut a section through the
+town, tap any spot to see when it floods, guess before you look, see when NOAA's
+scenarios reach each level, and browse the storms that have already come close.
+
 > Years ago I studied sea-level rise in St. Augustine for my landscape
 > architecture portfolio. The maps were drawn by hand, and the numbers could
 > not be checked or rerun. This project rebuilds that analysis from public
@@ -90,8 +95,8 @@ flowchart LR
 illustrative renders, rebuilt with `make covers` (after `make run`) from
 `scripts/covers/`. They use the same NOAA, Census and OSM layers, plus two
 inputs frozen in `data/frozen/`: OSM building footprints with their Overpass
-query and time, and one public-domain Library of Congress photo by Carol M.
-Highsmith. Building heights come from `building:levels` (untagged = one
+query and time, four public-domain Library of Congress photos by Carol M.
+Highsmith, and the USGS elevations and NOAA tide datum behind the sections. Building heights come from `building:levels` (untagged = one
 storey) and are exaggerated, with the water, five times in the 2.5D views.
 Percentages and flood levels are read from `outputs/land_loss.csv` and
 `outputs/sites_at_risk.csv`.
@@ -99,6 +104,24 @@ Percentages and flood levels are read from `outputs/land_loss.csv` and
 <a href="https://lunarc-seattle.github.io/st-augustine-slr/#compare-title"><img src="docs/figures/st-augustine-today-vs-7ft.png" alt="Old town today in grey beside the same streets at +7 ft in aqua, split by a slider line; 61.8% of city land newly under water" width="100%"></a>
 
 **[Drag to compare today with +1 to +9 ft on the project page →](https://lunarc-seattle.github.io/st-augustine-slr/#compare-title)**
+
+**The interactive project page.** Every number on it is read from files that
+`make covers` writes. Nothing is typed in by hand.
+
+| Section | What you can do | Data |
+|---|---|---|
+| Hero | The old town floods behind the title, a foot at a time | 2.5D renders, `land_loss_every_foot.csv` |
+| 01 Compare | Drag a divider between today and +1 to +9 ft; press play; tap a landmark ring for its card with a Library of Congress photo | `every_foot.py` (odd levels must equal `land_loss.csv`) |
+| 02 Rising | Step through six levels with Raise, arrow keys or a swipe; a "string of pearls" shows when low-lying ground at each landmark floods and when the sea itself arrives | NOAA `low` vs `slr` per landmark |
+| 03 Section | East-west sections through the Castillo and the Plaza, water rising on real ground | USGS 3DEP lidar, NOAA tide station 8720576 datum |
+| 04 Your spot | Tap anywhere for the first level that floods it; switch to a plan view of the water at any level; copy a link to that spot | first flood level per 10 m pixel |
+| 05 Land | Guess the share at +3 ft before the bars are revealed | `land_loss.csv` |
+| 06 When | The year each level arrives under NOAA's five 2022 scenarios; type a birth year to see your age then | Sweet et al. 2022, grid cell over the city |
+| 07 Storms | Every storm track within 100 km since 1851, by year and closest approach | NOAA HURDAT2 |
+| 08 Figures | The A4 maps and chart, zoomable as vector PDFs | `make run` |
+
+Links keep their state (`#ft=5`, `#spot=…`, `#water=4`), so a view can be shared.
+The storms are context only: storm surge is not modelled anywhere in this project.
 
 <img src="docs/figures/st-augustine-plan.png" alt="Plan of St. Augustine with land newly flooded at +5 ft in aqua and seven coastal landmarks in red, beside a toned photo of Matanzas Bay from the Castillo" width="100%">
 
@@ -131,7 +154,7 @@ make run    # analysis, self-checks, CSVs, figures and manifest -> outputs/
 make test   # offline tests on a small fixture, with coverage (a few seconds)
 make lint   # ruff lint and format check, as in CI
 make docs   # copy the figures into docs/ for the README and project page
-make covers # cover GIF, poster and plan graphic (scripts/covers/, data/frozen/)
+make covers # cover GIF, poster, plan and the project page's data (scripts/covers/)
 ```
 
 The Makefile works on Linux, macOS and Windows (Git Bash with GNU make).
@@ -245,6 +268,17 @@ page, served by GitHub Pages.
 | U.S. Census Bureau, TIGER/Line 2025 area water, St. Johns County | [`tl_2025_12109_areawater.zip`](https://www2.census.gov/geo/tiger/TIGER2025/AREAWATER/tl_2025_12109_areawater.zip) | 2026-10-26 |
 | OpenStreetMap contributors (ODbL), via OSMnx and the Overpass API (`overpass-api.de`), tags `historic=*` and `leisure=park` | frozen in `data/cache/osm/osm_sites.geojson` | queried 2026-10-26 |
 
+Used only by `make covers` for the cover graphics and the project page:
+
+| Source | File | Downloaded (UTC) |
+|---|---|---|
+| NOAA, 2022 Sea Level Rise Technical Report data (Sweet et al. 2022, NOAA Technical Report NOS 01) | [`Sea_Level_Rise_Datasets_2022.zip`](https://cdn.oceanservice.noaa.gov/oceanserviceprod/hazards/sealevelrise/Sea_Level_Rise_Datasets_2022.zip) | 2026-10-31 |
+| NOAA National Hurricane Center, HURDAT2 Atlantic best tracks 1851–2025 | [`hurdat2-1851-2025-092326.txt`](https://www.nhc.noaa.gov/data/hurdat/hurdat2-1851-2025-092326.txt) | 2026-10-26 |
+| USGS 3DEP elevations, Elevation Point Query Service, every 8 m along two sections | frozen in `data/frozen/sections/*_3dep.csv` | 2026-10-31 |
+| NOAA CO-OPS datums, station 8720576 St. Augustine (1983–2001 epoch) | frozen in `data/frozen/sections/coops_8720576_datums.json` | 2026-10-31 |
+| OpenStreetMap building footprints (ODbL) | frozen in `data/frozen/osm_buildings.geojson` | see its `.meta.json` |
+| Library of Congress, Carol M. Highsmith Archive (no known restrictions) | frozen in `data/frozen/loc/`, items listed in `SOURCES.md` | 2026-10-30 |
+
 Exact timestamps and SHA-256 hashes are in each file's `*.meta.json` in
 `data/cache/` and are copied into `outputs/manifest.json` on every run.
 
@@ -291,19 +325,21 @@ src/slr/manifest.py     run record
 src/slr/cli.py          `python -m slr.cli data|run`
 docs/                   project page (index.html), figure PNGs and PDFs
 scripts/make_fixture.py rebuilds the test fixture and regression baseline
+scripts/covers/         cover graphics and the project page's data (`make covers`)
 ```
 
 </details>
 
 ## Future work
 
-- Add NOAA HURDAT2 to count historical hurricanes that passed near
-  St. Augustine.
+- Model storm surge on top of the still-water levels. The project page shows
+  HURDAT2 storm tracks near the city, but only as context.
 
 ## License
 
 Code is under the [MIT License](LICENSE). The data are not covered by it:
-NOAA and U.S. Census data are U.S. Government works in the public domain, and
+NOAA, USGS and U.S. Census data are U.S. Government works in the public domain, the
+Library of Congress photos carry no known restrictions, and
 OpenStreetMap data are © OpenStreetMap contributors under the
 [ODbL](https://opendatacommons.org/licenses/odbl/). The figures that show
 sites contain OSM data, so reuse of them must credit OpenStreetMap.
