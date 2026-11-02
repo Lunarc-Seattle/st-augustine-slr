@@ -2,6 +2,10 @@
 
 # St. Augustine sea-level-rise scenarios
 
+### [▶ Open the interactive maps](https://lunarc-seattle.github.io/st-augustine-slr/)
+
+Drag today against 1 to 9 ft, cut a section through the old town, tap any street to see when it floods.
+
 **How much of St. Augustine, Florida, the oldest continuously inhabited
 European-founded city in the continental U.S., goes under water at 1 to 9 ft of sea-level rise, and which historic
 sites and parks are in the way?** This is a reproducible Python pipeline built

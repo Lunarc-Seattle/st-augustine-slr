@@ -34,7 +34,7 @@ RENDER_DPI = 200  # stills at 2400x1350, so the push-in never upsamples
 T_INTRO, STEP, FADE = 0.4, 1.4, 0.6  # today hold, seconds per foot, cross-fade
 ZOOM_END = 1.10
 FFMPEG = os.environ.get("FFMPEG", "ffmpeg")
-PAGE = "lunarc-seattle.github.io/st-augustine-slr"
+REPO = "github.com/Lunarc-Seattle/st-augustine-slr"  # the repo; its README opens the interactive page
 
 DATA = json.loads(Path("docs/figures/compare/levels.json").read_text())
 PCT = {lv["ft"]: lv["pct"] for lv in DATA["levels"]}
@@ -187,7 +187,7 @@ def frame(images, t):
     # closing card
     end = ease((t - (T_INTRO + TOP * STEP + 0.6)) / 0.6)
     if end > 0:
-        label = f"Explore it interactively:  {PAGE}"
+        label = f"Code and interactive maps:  {REPO}"
         w = d.textlength(label, font=F_PILL)
         bx, by = W - 96 - w - 56, H - 150
         d.rounded_rectangle((bx, by, bx + w + 56, by + 76), radius=38, fill=(43, 49, 54, int(240 * end)))
