@@ -216,6 +216,31 @@ def main():
             ],
             check=True,
         )
+    # looping preview for the README, which cannot play an MP4 inline; it links to the MP4
+    subprocess.run(
+        [
+            FFMPEG,
+            "-y",
+            "-loglevel",
+            "error",
+            "-i",
+            str(VIDEO),
+            "-vf",
+            "fps=15,scale=1280:-2:flags=lanczos",
+            "-c:v",
+            "libwebp_anim",
+            "-lossless",
+            "0",
+            "-quality",
+            "70",
+            "-compression_level",
+            "6",
+            "-loop",
+            "0",
+            str(VIDEO.with_suffix(".webp")),
+        ],
+        check=True,
+    )
     print(
         VIDEO,
         f"{VIDEO.stat().st_size / 1e6:.1f} MB; recorded {span:.1f} s in {len(frames)} frames, played at {speed:.2f}x",

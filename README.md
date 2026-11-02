@@ -1,4 +1,4 @@
-<a href="https://lunarc-seattle.github.io/st-augustine-slr/"><img src="docs/figures/st-augustine-rise.gif" alt="Animated 2.5D view up the St. Augustine bayfront as the sea rises from today to 9 ft; landmarks turn red as they flood" width="100%"></a>
+<a href="docs/media/st-augustine-rise.mp4"><img src="docs/media/st-augustine-rise.webp" alt="20-second animation: the 2.5D old town of St. Augustine as the sea rises from today to 9 ft, with the share of city land under water and each landmark listed as the water reaches it" width="100%"></a>
 
 # St. Augustine sea-level-rise scenarios
 
@@ -15,8 +15,10 @@ checks its own results.
 
 <img src="docs/figures/st-augustine-poster.png" alt="Poster: share of city land newly under water at 1, 3, 5, 7 and 9 ft (8%, 22%, 43%, 62%, 69%) and the landmarks reached at +1 ft and +3 ft, beside a 2.5D view of the old town at +5 ft" width="100%">
 
-**▶ 20-second videos:** [the sea rising, 0 to 9 ft](docs/media/st-augustine-rise.mp4) ·
-[the project page in use](docs/media/st-augustine-web.mp4) (1080p MP4, no audio)
+<a href="docs/media/st-augustine-web.mp4"><img src="docs/media/st-augustine-web.webp" alt="20-second screen recording of the project page: dragging the today versus +7 ft divider, opening the Castillo card, raising the water on the section, tapping a street on the flood map, and typing a birth year" width="100%"></a>
+
+<sub>Looping previews above. Click either one for the 20-second 1080p MP4
+([the rise](docs/media/st-augustine-rise.mp4) · [the page in use](docs/media/st-augustine-web.mp4)).</sub>
 
 **[Explore it on the interactive project page →](https://lunarc-seattle.github.io/st-augustine-slr/)** Drag today against
 any level from 1 to 9 ft, step through the rise, cut a section through the

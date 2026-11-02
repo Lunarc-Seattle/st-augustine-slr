@@ -27,6 +27,7 @@ import persp
 
 OUT = Path("outputs/covers/video")
 VIDEO = Path("docs/media/st-augustine-rise.mp4")
+OG_CARD = Path("docs/figures/og-card.png")
 W, H, FPS, SECONDS = 1920, 1080, 30, 20
 RENDER_DPI = 200  # stills at 2400x1350, so the push-in never upsamples
 T_INTRO, STEP, FADE = 2.0, 1.45, 0.6  # today hold, seconds per foot, cross-fade
@@ -251,7 +252,39 @@ def main():
     enc.stdin.close()
     if enc.wait():
         raise SystemExit("ffmpeg failed")
-    frame(images, SECONDS - 0.5).save(OUT / "rise_last_frame.png")
+    last = frame(images, SECONDS - 0.5)
+    last.save(OUT / "rise_last_frame.png")
+    # link-preview card for the project page (og:image) at LinkedIn's 1.91:1: the whole frame, scaled to
+    # the card's height, on white (the frame's own edges are white, so the padding does not show)
+    card = Image.new("RGB", (1200, 628), (255, 255, 255))
+    small = last.resize((round(W * 628 / H), 628), Image.LANCZOS)
+    card.paste(small, ((1200 - small.width) // 2, 0))
+    card.save(OG_CARD, optimize=True)
+    # looping preview for the README, which cannot play an MP4 inline; it links to the MP4
+    subprocess.run(
+        [
+            FFMPEG,
+            "-y",
+            "-loglevel",
+            "error",
+            "-i",
+            str(VIDEO),
+            "-vf",
+            "fps=12,scale=1120:-2:flags=lanczos",
+            "-c:v",
+            "libwebp_anim",
+            "-lossless",
+            "0",
+            "-quality",
+            "62",
+            "-compression_level",
+            "6",
+            "-loop",
+            "0",
+            str(VIDEO.with_suffix(".webp")),
+        ],
+        check=True,
+    )
     print(VIDEO, f"{VIDEO.stat().st_size / 1e6:.1f} MB")
 
 
