@@ -30,7 +30,8 @@ VIDEO = Path("docs/media/st-augustine-rise.mp4")
 OG_CARD = Path("docs/figures/og-card.png")
 W, H, FPS, SECONDS = 1920, 1080, 30, 20
 RENDER_DPI = 200  # stills at 2400x1350, so the push-in never upsamples
-T_INTRO, STEP, FADE = 2.0, 1.45, 0.6  # today hold, seconds per foot, cross-fade
+# today is held only briefly so the picture is visibly moving at once; +9 ft gets the long hold
+T_INTRO, STEP, FADE = 0.4, 1.4, 0.6  # today hold, seconds per foot, cross-fade
 ZOOM_END = 1.10
 FFMPEG = os.environ.get("FFMPEG", "ffmpeg")
 PAGE = "lunarc-seattle.github.io/st-augustine-slr"

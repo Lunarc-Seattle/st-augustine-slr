@@ -999,7 +999,7 @@ body { overflow-x: clip; }
     var i = 0, timer = null, visible = true;
     function tick() {
       paint(seq[i]);
-      var hold = seq[i] === 0 ? 1600 : i === seq.length - 1 ? 2800 : 950;
+      var hold = seq[i] === 0 ? 500 : i === seq.length - 1 ? 4500 : 950;  // move at once, linger on +9 ft
       i = (i + 1) % seq.length;
       timer = setTimeout(function () { timer = null; if (visible && !document.hidden) tick(); }, hold);
     }

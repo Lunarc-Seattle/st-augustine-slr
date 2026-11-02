@@ -462,7 +462,7 @@ def make_split():
 
 
 # GIF timing (ms): start rising almost at once, keep each step short, hold longest on the worst case
-HOLD_FIRST, HOLD_STEP, HOLD_LAST, TWEEN, TWEENS = 600, 650, 2600, 60, 5
+HOLD_FIRST, HOLD_STEP, HOLD_LAST, TWEEN, TWEENS = 600, 650, 4500, 60, 5
 
 
 def make_gif():
